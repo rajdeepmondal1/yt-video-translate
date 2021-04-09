@@ -5,11 +5,9 @@ from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from users.models import User
-
-from yt_video_translate.video_translator.tasks import download_yt_video
-
-from .forms import Video_form
-from .models import Video
+from video_translator.forms import Video_form
+from video_translator.models import Video
+from video_translator.tasks import download_yt_video
 
 
 @login_required

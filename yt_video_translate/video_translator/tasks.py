@@ -16,10 +16,9 @@ from google.cloud import storage, texttospeech
 from google.cloud import translate_v2 as translate
 from moviepy.editor import AudioFileClip, CompositeAudioClip, VideoFileClip
 from pytube import YouTube, extract
+from video_translator.models import Video
 
 from config import celery_app
-
-from .models import Video
 
 User = get_user_model()
 
