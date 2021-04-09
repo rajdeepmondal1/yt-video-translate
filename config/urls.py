@@ -19,7 +19,12 @@ urlpatterns = [
     # path('filer/', include('filer.urls')),
     # url(r'^', include('filer.server.urls')),
     # Your stuff: custom urls includes go here
-    path("video/", include("yt_video_translate.video_translator.urls")),
+    path(
+        "video/",
+        include(
+            "yt_video_translate.video_translator.urls", namespace="video_translator"
+        ),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
