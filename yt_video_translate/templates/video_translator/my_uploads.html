@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if qs %}
+        <h1>My Uploads</h1>
+        {% for q in qs %}
+            <ul>
+                <a href="{% url 'video_translator:download' q.id %}" download>Translated - {{ q.youtube_title }}</a>
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock content %}

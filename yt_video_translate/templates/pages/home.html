@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="text-center text-white bg-light">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <h1 class="text-dark mb-2" style="font-family: Rubik, sans-serif;">Wanna translate a YouTube video from
+                    English to other language?</h1>
+            </div>
+            <form>
+                {#                        <div class="form-row">#}
+                {#                            <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg"#}
+                {#                                                                             type="email"#}
+                {#                                                                             placeholder="Enter YouTube Link..."></div>#}
+                <div class="d-flex justify-content-center align-items-center">
+                    <a class="btn btn-primary btn-lg"
+                       href="{% url 'video_translator:video_index' %}"
+                       role="button">Try it!</a>
+
+                </div>
+                {#                        </div>#}
+            </form>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock content %}

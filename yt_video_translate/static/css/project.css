@@ -1,0 +1,45 @@
+/* These styles are generated from project.scss. */
+
+.alert-debug {
+    color: black;
+    background-color: white;
+    border-color: #d6e9c6;
+}
+
+.alert-error {
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #eed3d7;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+}
+
+.loading--full-height {
+    align-items: center;
+    height: 100%;
+}
+
+.loading::after {
+    content: "";
+    width: 80px;
+    height: 80px;
+    border: 10px solid #dddddd;
+    border-top-color: #009579;
+    border-radius: 50%;
+    transform: rotate(0.16turn);
+    animation: loading 1s ease infinite;
+}
+
+@keyframes loading {
+    /* Safari support */
+    from {
+        transform: rotate(0turn);
+    }
+
+    to {
+        transform: rotate(1turn);
+    }
+}
