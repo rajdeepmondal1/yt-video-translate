@@ -19,7 +19,7 @@ class User(AbstractUser):
     last_name = None  # type: ignore
 
     class Meta:
-        app_label = "yt_video_translate.users"
+        app_label = "users"
 
     def get_absolute_url(self):
         """Get url for user's detail view.
