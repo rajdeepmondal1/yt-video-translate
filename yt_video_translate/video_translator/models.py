@@ -1,8 +1,9 @@
 import uuid
 
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from yt_video_translate.users.models import User
+User = get_user_model()
 
 
 def user_directory_path(instance, filename):

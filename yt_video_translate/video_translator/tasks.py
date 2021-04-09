@@ -9,6 +9,7 @@ import uuid
 import moviepy.editor as mp
 from celery.signals import task_failure, task_postrun, task_prerun, task_success
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from google.cloud import speech_v1p1beta1 as speech
 from google.cloud import storage, texttospeech
@@ -17,9 +18,10 @@ from moviepy.editor import AudioFileClip, CompositeAudioClip, VideoFileClip
 from pytube import YouTube, extract
 
 from config import celery_app
-from yt_video_translate.users.models import User
 
 from .models import Video
+
+User = get_user_model()
 
 
 @celery_app.task(soft_time_limit=10000)
