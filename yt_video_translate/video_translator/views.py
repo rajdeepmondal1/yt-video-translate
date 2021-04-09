@@ -1,13 +1,16 @@
 import time
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from users.models import User
-from video_translator.forms import Video_form
-from video_translator.models import Video
-from video_translator.tasks import download_yt_video
+
+from .forms import Video_form
+from .models import Video
+from .tasks import download_yt_video
+
+User = get_user_model()
 
 
 @login_required

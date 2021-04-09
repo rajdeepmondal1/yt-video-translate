@@ -1,10 +1,6 @@
 from django.urls import path
-from video_translator.views import (
-    current_processed_file,
-    download,
-    my_uploads,
-    video_index,
-)
+
+from .views import current_processed_file, download, my_uploads, video_index
 
 app_name = "video_translator"
 urlpatterns = [

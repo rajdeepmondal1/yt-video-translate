@@ -1,5 +1,6 @@
 from django import forms
-from video_translator.models import Video
+
+from .models import Video
 
 
 class Video_form(forms.ModelForm):

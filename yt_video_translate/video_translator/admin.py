@@ -1,4 +1,5 @@
 from django.contrib import admin
-from video_translator.models import Video
+
+from .models import Video
 
 admin.site.register(Video)

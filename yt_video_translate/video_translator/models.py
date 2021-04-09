@@ -35,8 +35,8 @@ class Video(models.Model):
     modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    class Meta:
-        app_label = "video_translator"
+    # class Meta:
+    #     app_label = "video_translator"
 
     def __str__(self):
         return str(self.youtube_title)
