@@ -29,7 +29,9 @@ def download_yt_video(my_id, link):
     my_user = User(id=my_id)
     video = Video(user=my_user)
 
-    credential_path = ".envs/translate-af9005978349.json"
+    credential_path = (
+        "yt_video_translate/video_translator/env/translate-af9005978349.json"
+    )
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
     # os.environ['STORAGE_BUCKET'] = "translate-001"
 
