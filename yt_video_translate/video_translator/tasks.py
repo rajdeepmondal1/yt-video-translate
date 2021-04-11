@@ -116,7 +116,7 @@ def audioFromVideo(video_file, temp_audio):
     )
     with open(f"{temp_audio.name}", "rb") as fp1:
         fp1.seek(0)
-        file_content_only_audio = fp1
+        file_content_only_audio = fp1.read()
         fp1.close()
     return ContentFile(file_content_only_audio)
     # return file_content_only_audio
