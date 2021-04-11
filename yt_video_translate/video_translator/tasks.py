@@ -395,8 +395,11 @@ def translation_to_target_language(
     # frame_rate, channels = frame_rate_channel(f"{video.audio_clip.path}")
     # if channels > 1:
     #     video.audio_clip.save("audio.wav", stereo_to_mono(f"{video.audio_clip.path}"))
+    audio_file_clip = os.path.join(
+        file_path, f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}"
+    )
 
-    blob.upload_from_filename(f"{video.audio_clip.path}", content_type="audio/wav")
+    blob.upload_from_filename(audio_file_clip, content_type="audio/wav")
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
