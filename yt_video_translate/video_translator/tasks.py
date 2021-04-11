@@ -396,7 +396,10 @@ def translation_to_target_language(
     # if channels > 1:
     #     video.audio_clip.save("audio.wav", stereo_to_mono(f"{video.audio_clip.path}"))
     audio_file_clip = os.path.join(
-        settings.MEDIA_ROOT,
+        "gs://",
+        storageBucket,
+        "/media/",
+        # settings.MEDIA_ROOT,
         f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}",
     )
 
