@@ -73,7 +73,7 @@ def download_yt_video(my_id, link):
     # "hi": "hi-IN-Wavenet-C"
     outFile = translation_to_target_language(
         video,
-        file_content_only_audio_save,
+        file_content_only_audio_save.seek(0),
         yt_id,
         srcLang,
         file_path,
