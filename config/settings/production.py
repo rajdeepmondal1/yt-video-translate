@@ -75,7 +75,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # MEDIA
 # ------------------------------------------------------------------------------
 DEFAULT_FILE_STORAGE = "yt_video_translate.utils.storages.MediaRootGoogleCloudStorage"
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
+MEDIA_URL = f"https://storage.googleapis.com/storage/v1/b/{GS_BUCKET_NAME}/o/media/"
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
