@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -8,7 +9,9 @@ User = get_user_model()
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return f"user_{instance.user.id}/video_{instance.id}/{filename}"
+    return (
+        settings.MEDIA_ROOT + f"user_{instance.user.id}/video_{instance.id}/{filename}"
+    )
 
 
 # Create your models here.
