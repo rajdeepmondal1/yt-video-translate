@@ -407,7 +407,8 @@ def translation_to_target_language(
 
     # TODO - Fix x
 
-    blob.upload_from_file(f"{video.audio_clip.url}", content_type="audio/wav")
+    # blob.upload_from_file(f"{video.audio_clip.url}", content_type="audio/wav")
+    blob.upload_from_filename(video.audio_clip.url)
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
