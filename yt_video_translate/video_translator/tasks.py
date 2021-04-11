@@ -53,7 +53,7 @@ def download_yt_video(my_id, link):
     file_content_only_audio_save = audioFromVideo(
         f"{file_path}/{yt_id}.mp4", temp_audio
     )
-    video.audio_clip.save("audio.wav", ContentFile(file_content_only_audio_save))
+    video.audio_clip.save("audio.wav", file_content_only_audio_save)
 
     """Remove Audio from the Downloaded Video File"""
     file_content_silent_video_save = removeAudioFromVideo(
@@ -118,8 +118,8 @@ def audioFromVideo(video_file, temp_audio):
         fp1.seek(0)
         file_content_only_audio = fp1
         fp1.close()
-    # return ContentFile(file_content_only_audio)
-    return file_content_only_audio
+    return ContentFile(file_content_only_audio)
+    # return file_content_only_audio
 
 
 def removeAudioFromVideo(video_file, temp_silent_video):
@@ -406,7 +406,9 @@ def translation_to_target_language(
     #     f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}",
     # )
 
-    blob.upload_from_filename(file_content_only_audio_save, content_type="audio/wav")
+    blob.upload_from_filename(
+        file_content_only_audio_save.read(), content_type="audio/wav"
+    )
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
