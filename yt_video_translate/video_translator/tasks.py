@@ -73,7 +73,7 @@ def download_yt_video(my_id, link):
     # "hi": "hi-IN-Wavenet-C"
     outFile = translation_to_target_language(
         video,
-        file_content_only_audio_save.seek(0),
+        # file_content_only_audio_save.seek(0),
         yt_id,
         srcLang,
         file_path,
@@ -379,7 +379,6 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
 
 def translation_to_target_language(
     video,
-    file_content_only_audio_save,
     yt_id,
     srcLang,
     file_path,
@@ -406,7 +405,13 @@ def translation_to_target_language(
     #     f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}",
     # )
 
-    blob.upload_from_file(file_content_only_audio_save, content_type="audio/wav")
+    with open(f"{video.audio_clip.path}", "rb") as f:
+        f.seek(0)
+        only_audio = f.read()
+        f.close()
+    # return ContentFile(only_audio)
+
+    blob.upload_from_file(only_audio, content_type="audio/wav")
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
