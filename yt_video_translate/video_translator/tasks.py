@@ -53,7 +53,7 @@ def download_yt_video(my_id, link):
     file_content_only_audio_save = audioFromVideo(
         f"{file_path}/{yt_id}.mp4", temp_audio
     )
-    video.audio_clip.save("audio.wav", file_content_only_audio_save)
+    video.audio_clip.save("audio.wav", ContentFile(file_content_only_audio_save))
 
     """Remove Audio from the Downloaded Video File"""
     file_content_silent_video_save = removeAudioFromVideo(
