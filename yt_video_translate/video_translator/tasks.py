@@ -406,9 +406,7 @@ def translation_to_target_language(
     #     f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}",
     # )
 
-    blob.upload_from_filename(
-        file_content_only_audio_save.read(), content_type="audio/wav"
-    )
+    blob.upload_from_filename(file_content_only_audio_save, content_type="audio/wav")
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
