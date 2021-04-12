@@ -423,7 +423,8 @@ def translation_to_target_language(
     blob.upload_from_file(
         # f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/media/{video.audio_clip.name}"
         # video.audio_clip.name
-        video.audio_clip.read()
+        # video.audio_clip.read()
+        video.audio_clip.file
     )
 
     # blob.upload_from_filename(video.audio_clip.url)
