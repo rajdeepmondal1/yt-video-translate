@@ -79,6 +79,7 @@ def download_yt_video(my_id, link):
         video,
         # file_content_only_audio_save,
         byte_file_content_only_audio,
+        temp_audio,
         yt_id,
         srcLang,
         file_path,
@@ -388,6 +389,7 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
 def translation_to_target_language(
     video,
     byte_file_content_only_audio,
+    temp_audio,
     yt_id,
     srcLang,
     file_path,
@@ -424,7 +426,8 @@ def translation_to_target_language(
         # f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/media/{video.audio_clip.name}"
         # video.audio_clip.name
         # video.audio_clip.read()
-        video.audio_clip.file.read()
+        # video.audio_clip.file
+        temp_audio
     )
 
     # blob.upload_from_filename(video.audio_clip.url)
