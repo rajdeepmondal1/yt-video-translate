@@ -8,6 +8,7 @@ import uuid
 
 import moviepy.editor as mp
 from celery.signals import task_failure, task_postrun, task_prerun, task_success
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from google.cloud import speech_v1p1beta1 as speech
@@ -40,8 +41,8 @@ def download_yt_video(my_id, link):
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
 
-    # file_path = os.path.join(settings.MEDIA_ROOT, "temp")
-    file_path = os.mkdir("temp")
+    file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    # file_path = os.mkdir("temp")
     # outputFiles = os.listdir(outputDir)
 
     video.youtube_url = f"{link}"
@@ -52,7 +53,7 @@ def download_yt_video(my_id, link):
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
-    file_content_only_audio_save = audioFromVideo(
+    file_content_only_audio_save, byte_file_content_only_audio = audioFromVideo(
         f"{file_path}/{yt_id}.mp4", temp_audio
     )
     video.audio_clip.save("audio.wav", file_content_only_audio_save)
@@ -76,6 +77,7 @@ def download_yt_video(my_id, link):
     outFile = translation_to_target_language(
         video,
         # file_content_only_audio_save,
+        byte_file_content_only_audio,
         yt_id,
         srcLang,
         file_path,
@@ -120,7 +122,8 @@ def audioFromVideo(video_file, temp_audio):
         fp1.seek(0)
         file_content_only_audio = fp1.read()
         fp1.close()
-    return ContentFile(file_content_only_audio)
+    byte_file_content_only_audio = ContentFile(b"{file_content_only_audio}")
+    return ContentFile(file_content_only_audio), byte_file_content_only_audio
     # return file_content_only_audio
 
 
@@ -381,6 +384,7 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
 
 def translation_to_target_language(
     video,
+    byte_file_content_only_audio,
     yt_id,
     srcLang,
     file_path,
@@ -413,9 +417,10 @@ def translation_to_target_language(
     # url = f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/"
     # total_url = url + f"media/user_{video.user.id}/video_{video.id}/{video.audio_clip.name}"
 
-    blob.upload_from_filename(
+    blob.upload_from_file(
         # f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/media/{video.audio_clip.name}"
-        video.audio_clip.name
+        # video.audio_clip.name
+        byte_file_content_only_audio
     )
 
     # blob.upload_from_filename(video.audio_clip.url)
