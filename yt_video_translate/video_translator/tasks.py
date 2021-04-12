@@ -8,7 +8,6 @@ import uuid
 
 import moviepy.editor as mp
 from celery.signals import task_failure, task_postrun, task_prerun, task_success
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from google.cloud import speech_v1p1beta1 as speech
@@ -41,7 +40,10 @@ def download_yt_video(my_id, link):
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
 
-    file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    # file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    file_path = os.mkdir("temp")
+    # outputFiles = os.listdir(outputDir)
+
     video.youtube_url = f"{link}"
     video.youtube_title = yt.title
 
