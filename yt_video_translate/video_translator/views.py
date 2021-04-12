@@ -1,5 +1,3 @@
-import time
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponseRedirect
@@ -19,27 +17,36 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            task = download_yt_video.delay(request.user.id, link)
+            download_yt_video.delay(request.user.id, link)
 
-            while task.state not in ("SUCCESS", "FAILURE"):
-                time.sleep(0.1)
-            if task.failed():
-                return render(
-                    request,
-                    "video_translator/video_index.html",
-                    {
-                        "form": form,
-                    },
-                )
+            # while task.state not in ("SUCCESS", "FAILURE"):
+            #     time.sleep(0.1)
+            # if task.failed():
+            #     return render(
+            #         request,
+            #         "video_translator/video_index.html",
+            #         {
+            #             "form": form,
+            #         },
+            #     )
+            my_user = User(id=request.user.id)
+            current_file = (
+                Video.objects.filter(user=my_user).order_by("-created").first()
+            )
+            flag = 0 if current_file is None else 1
+            return render(
+                request,
+                "video_translator/task_processing.html",
+                {"form": form, "flag": flag},
+            )
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
     else:
         form = Video_form()
-        my_user = User(id=request.user.id)
-        current_file = Video.objects.filter(user=my_user).order_by("-created").first()
-        flag = 0 if current_file is None else 1
+
         return render(
-            request, "video_translator/video_index.html", {"form": form, "flag": flag}
+            request,
+            "video_translator/video_index.html",
         )
 
 

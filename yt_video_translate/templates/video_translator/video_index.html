@@ -1,48 +1,59 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
-
-{% block content %}
-    <div class="container" id="form_container">
-        <div class="row">
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="col-xl-9 mx-auto ">
-                    <h1 class="text-dark mb-5 justify-content-center" style="font-family: Rubik, sans-serif;">Translate
-                        a YouTube video from
-                        English to other language</h1>
-                </div>
-            </div>
-
-            <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                <form id="input_form" action="." method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <div class="d-flex justify-content-center align-items-center">
-                        <button type="submit" class="btn btn-primary btn-lg mx-auto">Translate</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="container" id="form_container">
+  <div class="row">
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="col-xl-9 mx-auto">
+        <h1
+          class="text-dark mb-5 justify-content-center"
+          style="font-family: Rubik, sans-serif;"
+        >
+          Translate a YouTube video from English to other language
+        </h1>
+      </div>
     </div>
-    <div class="container" id="hidden_section" style="display: none;">
-        <div class="row my-4 align-items-center justify-content-center">
-            <div class="loading loading--full-height"></div>
 
+    <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+      <form
+        id="input_form"
+        action="."
+        method="post"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %} {{ form|crispy }}
+        <div class="d-flex justify-content-center align-items-center">
+          <button type="submit" class="btn btn-primary btn-lg mx-auto">
+            Translate
+          </button>
         </div>
-        <div class="row my-4 align-items-center justify-content-center">
-            <div class="my-3">
-                <h2 class="d-flex justify-content-center">We are currently translating your video.</h2>
-                <h4 class="d-flex justify-content-center">This will take some time to complete.</h4>
-                {% if flag %}
-                    <h6 class="d-flex justify-content-center align-items-center">While you are waiting, you can
-                        check
-                        out
-                        your<a target="_blank" rel="noopener noreferrer"
-                               href="{% url 'video_translator:my_uploads' %}" class="mx-1">previous processed
-                            videos</a>.
-                    </h6>
-                {% endif %}
-            </div>
-        </div>
+      </form>
     </div>
+  </div>
+</div>
+<!-- <div class="container" id="hidden_section" style="display: none;">
+  <div class="row my-4 align-items-center justify-content-center">
+    <div class="loading loading--full-height"></div>
+  </div>
+  <div class="row my-4 align-items-center justify-content-center">
+    <div class="my-3">
+      <h2 class="d-flex justify-content-center">
+        We are currently translating your video.
+      </h2>
+      <h4 class="d-flex justify-content-center">
+        This will take some time to complete.
+      </h4>
+      {% if flag %}
+      <h6 class="d-flex justify-content-center align-items-center">
+        While you are waiting, you can check out your<a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="{% url 'video_translator:my_uploads' %}"
+          class="mx-1"
+          >previous processed videos</a
+        >.
+      </h6>
+      {% endif %}
+    </div>
+  </div>
+</div> -->
 
 {% endblock content %}
