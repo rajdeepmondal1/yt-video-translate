@@ -37,7 +37,7 @@ def video_index(request):
             return render(
                 request,
                 "video_translator/task_processing.html",
-                {"form": form, "flag": flag},
+                {"flag": flag},
             )
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
@@ -47,6 +47,7 @@ def video_index(request):
         return render(
             request,
             "video_translator/video_index.html",
+            {"form": form},
         )
 
 
