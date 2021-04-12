@@ -7,5 +7,5 @@ class StaticRootGoogleCloudStorage(GoogleCloudStorage):
 
 
 class MediaRootGoogleCloudStorage(GoogleCloudStorage):
-    location = "media"
+    # location = "media"
     file_overwrite = False
