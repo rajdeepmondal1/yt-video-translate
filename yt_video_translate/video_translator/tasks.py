@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import base64
 import html
 import json
 import os
@@ -122,7 +123,9 @@ def audioFromVideo(video_file, temp_audio):
         fp1.seek(0)
         file_content_only_audio = fp1.read()
         fp1.close()
-    byte_file_content_only_audio = ContentFile(b"{file_content_only_audio}")
+    byte_file_content_only_audio = ContentFile(
+        base64.b64decode(file_content_only_audio)
+    )
     return ContentFile(file_content_only_audio), byte_file_content_only_audio
     # return file_content_only_audio
 
@@ -420,7 +423,7 @@ def translation_to_target_language(
     blob.upload_from_file(
         # f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/media/{video.audio_clip.name}"
         # video.audio_clip.name
-        ContentFile(byte_file_content_only_audio)
+        byte_file_content_only_audio
     )
 
     # blob.upload_from_filename(video.audio_clip.url)
