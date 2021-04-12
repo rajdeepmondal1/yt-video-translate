@@ -80,6 +80,7 @@ def download_yt_video(my_id, link):
         # file_content_only_audio_save,
         byte_file_content_only_audio,
         temp_audio,
+        temp_silent_video,
         yt_id,
         srcLang,
         file_path,
@@ -390,6 +391,7 @@ def translation_to_target_language(
     video,
     byte_file_content_only_audio,
     temp_audio,
+    temp_silent_video,
     yt_id,
     srcLang,
     file_path,
@@ -493,7 +495,7 @@ def translation_to_target_language(
 
     dubbed = CompositeAudioClip(segments)
 
-    clip = VideoFileClip(f"{video.silent_video_clip.path}")
+    clip = VideoFileClip(temp_silent_video)
     clip = clip.set_audio(dubbed)
 
     clip.write_videofile(outFile, codec="libx264", audio_codec="aac")
