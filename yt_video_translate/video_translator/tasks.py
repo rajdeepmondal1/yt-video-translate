@@ -9,7 +9,6 @@ import uuid
 
 import moviepy.editor as mp
 from celery.signals import task_failure, task_postrun, task_prerun, task_success
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from google.cloud import speech_v1p1beta1 as speech
@@ -42,7 +41,13 @@ def download_yt_video(my_id, link):
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
 
-    file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    # file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    storageBucket = "translate-001"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(storageBucket)
+    file_path = os.path.join("temp")
+    # tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
+    # blob = bucket.blob(file_path)
     # file_path = os.mkdir("temp")
     # outputFiles = os.listdir(outputDir)
 
@@ -50,7 +55,7 @@ def download_yt_video(my_id, link):
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(file_path, yt, yt_id)
+    file_content_video = downloadVideo(file_path, yt, yt_id, storageBucket, bucket)
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
@@ -103,13 +108,23 @@ def download_yt_video(my_id, link):
     # shutil.rmtree(file_path, ignore_errors=True)
 
 
-def downloadVideo(file_path, yt, yt_id):
+def downloadVideo(file_path, yt, yt_id, storageBucket, bucket):
     """Download Video and save it into a model"""
+    yt_original_download = os.path.join(
+        file_path, "yt_original_download-" + str(uuid.uuid4()) + ".mp4"
+    )
+    blob = bucket.blob(yt_original_download)
+
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
-    ).desc().first().download(output_path=f"{file_path}", filename=f"{yt_id}")
+    ).desc().first().download(
+        output_path=f"{yt_original_download}"
+    )  # , filename=f"{yt_id}"
+    blob.upload_from_file(yt_original_download)
 
-    with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
+    # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
+
+    with open(os.path.join("gs://", storageBucket, yt_original_download), "rb") as fp:
         fp.seek(0)
         file_content_video = fp.read()
         fp.close()
@@ -404,7 +419,7 @@ def translation_to_target_language(
     storageBucket = "translate-001"
     storage_client = storage.Client()
     bucket = storage_client.bucket(storageBucket)
-    tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
+    tmpFile = os.path.join(file_path, str(uuid.uuid4()) + ".wav")
     blob = bucket.blob(tmpFile)
 
     # frame_rate, channels = frame_rate_channel(f"{video.audio_clip.path}")
