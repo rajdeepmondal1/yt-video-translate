@@ -9,6 +9,7 @@ import uuid
 
 import moviepy.editor as mp
 from celery.signals import task_failure, task_postrun, task_prerun, task_success
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from google.cloud import speech_v1p1beta1 as speech
@@ -41,11 +42,11 @@ def download_yt_video(my_id, link):
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
 
-    # file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    file_path = os.path.join(settings.MEDIA_ROOT, "temp")
     storageBucket = "translate-001"
     storage_client = storage.Client()
     bucket = storage_client.bucket(storageBucket)
-    file_path = os.mkdir("temp")
+    # file_path = os.mkdir("temp")
     # tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
     # blob = bucket.blob(file_path)
     # file_path = os.mkdir("temp")
@@ -55,7 +56,7 @@ def download_yt_video(my_id, link):
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(file_path, yt, yt_id, storageBucket, bucket)
+    file_content_video = downloadVideo(yt, yt_id, storageBucket, bucket)  # file_path
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
@@ -108,10 +109,10 @@ def download_yt_video(my_id, link):
     # shutil.rmtree(file_path, ignore_errors=True)
 
 
-def downloadVideo(file_path, yt, yt_id, storageBucket, bucket):
+def downloadVideo(yt, yt_id, storageBucket, bucket):
     """Download Video and save it into a model"""
     yt_original_download = os.path.join(
-        file_path, "yt_original_download-" + str(uuid.uuid4()) + ".mp4"
+        "temp", "yt_original_download-" + str(uuid.uuid4()) + ".mp4"
     )
     blob = bucket.blob(yt_original_download)
 
