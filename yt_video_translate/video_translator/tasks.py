@@ -120,7 +120,7 @@ def downloadVideo(yt, yt_id, bucket):
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(
-        filename=temp_yt_original
+        filename=f"{temp_yt_original}"
     )  # , filename=f"{yt_id}"
     blob.upload_from_file(yt_original_download)
 
@@ -421,7 +421,7 @@ def translation_to_target_language(
     storageBucket = "translate-001"
     storage_client = storage.Client()
     bucket = storage_client.bucket(storageBucket)
-    tmpFile = os.path.join(file_path, str(uuid.uuid4()) + ".wav")
+    tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
     blob = bucket.blob(tmpFile)
 
     # frame_rate, channels = frame_rate_channel(f"{video.audio_clip.path}")
