@@ -45,7 +45,7 @@ def download_yt_video(my_id, link):
     storageBucket = "translate-001"
     storage_client = storage.Client()
     bucket = storage_client.bucket(storageBucket)
-    file_path = os.path.join("temp")
+    file_path = os.mkdir("temp")
     # tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
     # blob = bucket.blob(file_path)
     # file_path = os.mkdir("temp")
