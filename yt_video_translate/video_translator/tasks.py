@@ -120,7 +120,9 @@ def downloadVideo(yt, yt_id, bucket):
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(
-        output_path=f"{temp_yt_original}", filename=f"{yt_id}"
+        output_path=f"{temp_yt_original.name}",
+        filename=f"{yt_original_download}",
+        skip_existing=False,
     )  # , filename=f"{yt_id}"
     blob.upload_from_file(f"{temp_yt_original.name}")
 
