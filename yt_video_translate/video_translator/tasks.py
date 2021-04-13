@@ -36,11 +36,11 @@ def download_yt_video(my_id, link):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
     # os.environ['STORAGE_BUCKET'] = "translate-001"
 
-    temp_audio = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
-    temp_silent_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
+
+    temp_audio = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    temp_silent_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
 
     file_path = os.path.join(settings.MEDIA_ROOT, "temp")
     storageBucket = "translate-001"
@@ -112,7 +112,7 @@ def download_yt_video(my_id, link):
 def downloadVideo(yt, yt_id, bucket):
     """Download Video and save it into a model"""
     yt_original_download = os.path.join(
-        "temp", "yt_original_download-" + str(uuid.uuid4()) + ".mp4"
+        "temp", "yt_original_download-" + yt_id + ".mp4"
     )
     temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
     blob = bucket.blob(yt_original_download)
