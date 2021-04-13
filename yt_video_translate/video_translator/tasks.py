@@ -114,16 +114,15 @@ def downloadVideo(yt, yt_id, bucket):
     yt_original_download = os.path.join(
         "temp", "yt_original_download-" + yt_id + ".mp4"
     )
-    # temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+    temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
     blob = bucket.blob(yt_original_download)
 
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(
-        output_path=f"{yt_original_download}",
-        # filename=f"{yt_original_download}"
+        output_path=f"{temp_yt_original}", filename=f"{yt_id}"
     )  # , filename=f"{yt_id}"
-    blob.upload_from_filename(f"{yt_original_download}")
+    blob.upload_from_file(f"{temp_yt_original.name}")
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
