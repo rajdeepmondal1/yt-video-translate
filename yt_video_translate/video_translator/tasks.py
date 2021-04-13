@@ -56,7 +56,7 @@ def download_yt_video(my_id, link):
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(yt, yt_id, storageBucket, bucket)  # file_path
+    file_content_video = downloadVideo(yt, yt_id, bucket)  # file_path
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
@@ -109,7 +109,7 @@ def download_yt_video(my_id, link):
     # shutil.rmtree(file_path, ignore_errors=True)
 
 
-def downloadVideo(yt, yt_id, storageBucket, bucket):
+def downloadVideo(yt, yt_id, bucket):
     """Download Video and save it into a model"""
     yt_original_download = os.path.join(
         "temp", "yt_original_download-" + str(uuid.uuid4()) + ".mp4"
@@ -126,7 +126,7 @@ def downloadVideo(yt, yt_id, storageBucket, bucket):
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
-    with open(os.path.join("gs://", storageBucket, yt_original_download), "rb") as fp:
+    with open(os.path.join("gs://", "translate-001", yt_original_download), "rb") as fp:
         fp.seek(0)
         file_content_video = fp.read()
         fp.close()
