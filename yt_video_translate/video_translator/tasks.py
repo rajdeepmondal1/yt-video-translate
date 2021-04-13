@@ -123,7 +123,7 @@ def downloadVideo(yt, yt_id, bucket):
         output_path=f"{yt_original_download}",
         # filename=f"{yt_original_download}"
     )  # , filename=f"{yt_id}"
-    blob.upload_from_file(yt_original_download)
+    blob.upload_from_filename(f"{yt_original_download}")
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
