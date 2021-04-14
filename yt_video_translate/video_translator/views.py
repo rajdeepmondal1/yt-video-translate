@@ -2,6 +2,7 @@ import os
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -61,8 +62,11 @@ def download(request, id):
     print("download")
     print("filename", filename)
     print("gcs_path", gcs_path)
-    response = FileResponse(open(gcs_path, "rb"))
-    return response
+    if default_storage.exists(gcs_path):
+        return FileResponse(default_storage.open(gcs_path, "rb"))
+
+    # response = FileResponse(open(gcs_path, "rb"))
+    # return response
 
 
 def my_uploads(request):
