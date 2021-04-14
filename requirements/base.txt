@@ -30,6 +30,7 @@ ffmpeg-python==0.2.0
 pytube==10.5.3 #https://github.com/pytube/pytube
 
 google-api-core==1.24.1
+gsutil==4.61
 google-auth==1.24.0
 google-cloud-core==1.5.0
 google-cloud-speech==2.0.1

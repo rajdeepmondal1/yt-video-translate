@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -7,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from google.cloud import storage
 
 from .forms import Video_form
 from .models import Video
@@ -58,27 +58,35 @@ def video_index(request):
 
 def download(request, id):
     obj = Video.objects.get(id=id)
-    credential_path = (
-        "yt_video_translate/video_translator/env/translate-af9005978349.json"
-    )
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
+    # credential_path = (
+    #     "yt_video_translate/video_translator/env/translate-af9005978349.json"
+    # )
+    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
     storageBucket = "translate-001"
-    filename = obj.translated_video_clip.name
-    gcs_path = os.path.join("gs://", storageBucket, "media", filename)
-    finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
-    print("download")
-    print("filename", filename)
-    print("gcs_path", gcs_path)
-    print("finalTranslatedFile", finalTranslatedFile)
+    # filename = obj.translated_video_clip.name
+    # # gcs_path = os.path.join("gs://", storageBucket, "media", filename)
+    # finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
+    # # print("download")
+    # # print("filename", filename)
+    # # print("gcs_path", gcs_path)
+    # # print("finalTranslatedFile", finalTranslatedFile)
     final_path = os.path.join(settings.MEDIA_ROOT, "temp", "final.mp4")
 
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(storageBucket)
-    blob = bucket.blob(finalTranslatedFile)
-    blob.download_to_filename(f"{final_path}")
+    # storage_client = storage.Client()
+    # bucket = storage_client.bucket(storageBucket)
+    # blob = bucket.blob(finalTranslatedFile)
+    # blob.download_to_filename(f"{final_path}")
+    # print("final_path", final_path)
 
+    filename = obj.translated_video_clip.name
+    subprocess.call(
+        f"gsutil cp gs://{storageBucket}/media/{filename} {final_path}", shell=True
+    )
+
+    # response = FileResponse(open(f"{final_path}", "rb"))
     response = FileResponse(open(f"{final_path}", "rb"))
     shutil.rmtree(final_path, ignore_errors=True)
+    # blob.delete()
     return response
 
     # bucket = storage_client.bucket(storageBucket)
