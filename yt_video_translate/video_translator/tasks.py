@@ -111,8 +111,9 @@ def download_yt_video(my_id, link):
 
 def downloadVideo(yt, yt_id, bucket):
     """Download Video and save it into a model"""
+    my_temp = os.path.join("gs://", "translate-001", "temp", "temp.mp4")
     yt_original_download = os.path.join(
-        "temp", "yt_original_download-" + yt_id + ".mp4"
+        "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
     )
     # temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
     blob = bucket.blob(yt_original_download)
@@ -120,15 +121,15 @@ def downloadVideo(yt, yt_id, bucket):
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(
-        output_path=f"{blob.name}",
+        output_path=f"{my_temp}",
         # filename=f"{yt_original_download}",
-        filename="yt_original_download-" + yt_id + ".mp4",
+        # filename="yt_original_download-" + yt_id + ".mp4",
     )  # , filename=f"{yt_id}"
-    # blob.upload_from_file(f"{temp_yt_original.name}")
+    blob.upload_from_filename(f"{my_temp}")
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
-    with open(os.path.join("gs://", "translate-001", yt_original_download), "rb") as fp:
+    with open(yt_original_download, "rb") as fp:
         fp.seek(0)
         file_content_video = fp.read()
         fp.close()
