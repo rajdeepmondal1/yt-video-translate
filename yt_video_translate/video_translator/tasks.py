@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import base64
 import glob
 import html
 import json
@@ -48,24 +47,19 @@ def download_yt_video(my_id, link):
         shutil.rmtree(os.path.join(settings.MEDIA_ROOT, "temp"), ignore_errors=True)
 
     file_path = os.path.join(settings.MEDIA_ROOT, "temp")
-    storageBucket = "translate-001"
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(storageBucket)
-    # file_path = os.mkdir("temp")
-    # tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
-    # blob = bucket.blob(file_path)
-    # file_path = os.mkdir("temp")
-    # outputFiles = os.listdir(outputDir)
+    # storageBucket = "translate-001"
+    # storage_client = storage.Client()
+    # bucket = storage_client.bucket(storageBucket)
 
     video.youtube_url = f"{link}"
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(file_path, yt, yt_id, bucket)  # file_path
+    file_content_video = downloadVideo(file_path, yt, yt_id)  # file_path
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
-    file_content_only_audio_save, byte_file_content_only_audio = audioFromVideo(
+    file_content_only_audio_save = audioFromVideo(
         f"{file_path}/{yt_id}.mp4", temp_audio
     )
     video.audio_clip.save("audio.wav", file_content_only_audio_save)
@@ -88,15 +82,13 @@ def download_yt_video(my_id, link):
     # "hi": "hi-IN-Wavenet-C"
     outFile = translation_to_target_language(
         video,
-        # file_content_only_audio_save,
-        byte_file_content_only_audio,
         temp_audio,
         temp_silent_video,
         yt_id,
         srcLang,
         file_path,
         targetLang,
-        {"bn": "bn-IN-Wavenet-A"},
+        {"hi": "hi-IN-Wavenet-C"},
         [],
         speakerCount,
     )
@@ -107,40 +99,15 @@ def download_yt_video(my_id, link):
 
     """Add the Translated Audio to the Silent Video"""
 
-    # test
-    # video.translated_video_clip.save(f"{yt.streams[0].title}.mp4", file_content_video)
-
     # USE IT AFTER TEST
-    # shutil.rmtree(file_path, ignore_errors=True)
+    shutil.rmtree(file_path, ignore_errors=True)
 
 
-def downloadVideo(file_path, yt, yt_id, bucket):
+def downloadVideo(file_path, yt, yt_id):
     """Download Video and save it into a model"""
-    # my_temp = os.path.join("gs://", "translate-001", "temp", "temp.mp4")
-    # yt_original_download = os.path.join(
-    #     "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
-    # )
-    # upload_local_directory_to_gcs
-    # temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-    # blob = bucket.blob(my_temp)
-    # blob = bucket.blob(yt_original_download)
-
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
-    ).desc().first().download(
-        output_path=f"{file_path}",
-        filename=f"{yt_id}"
-        # filename=f"{yt_original_download}",
-        # filename="yt_original_download-" + yt_id + ".mp4",
-    )  # , filename=f"{yt_id}"
-    # blob.upload_from_filename(f"{my_temp}")
-    gcs_path = os.path.join(
-        "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
-    )
-    upload_local_directory_to_gcs(f"{file_path}/{yt_id}.mp4", bucket, gcs_path)
-
-    # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
-
+    ).desc().first().download(output_path=f"{file_path}", filename=f"{yt_id}")
     with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
         fp.seek(0)
         file_content_video = fp.read()
@@ -157,11 +124,7 @@ def audioFromVideo(video_file, temp_audio):
         fp1.seek(0)
         file_content_only_audio = fp1.read()
         fp1.close()
-    byte_file_content_only_audio = ContentFile(
-        base64.b64decode(file_content_only_audio)
-    )
-    return ContentFile(file_content_only_audio), byte_file_content_only_audio
-    # return file_content_only_audio
+    return ContentFile(file_content_only_audio)
 
 
 def removeAudioFromVideo(video_file, temp_silent_video):
@@ -421,7 +384,6 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
 
 def translation_to_target_language(
     video,
-    byte_file_content_only_audio,
     temp_audio,
     temp_silent_video,
     yt_id,
@@ -439,32 +401,7 @@ def translation_to_target_language(
     tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
     blob = bucket.blob(tmpFile)
 
-    # frame_rate, channels = frame_rate_channel(f"{video.audio_clip.path}")
-    # if channels > 1:
-    #     video.audio_clip.save("audio.wav", stereo_to_mono(f"{video.audio_clip.path}"))
-    # audio_file_clip = os.path.join(
-    #     "gs://",
-    #     storageBucket,
-    #     "/media/",
-    #     # settings.MEDIA_ROOT,
-    #     f"user_{video.user.id}/video_{video.id}/{video.audio_clip.name}",
-    # )
-
-    # TODO - Fix x
-
-    # blob.upload_from_file(f"{video.audio_clip.url}", content_type="audio/wav")
-    # url = f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/"
-    # total_url = url + f"media/user_{video.user.id}/video_{video.id}/{video.audio_clip.name}"
-
-    blob.upload_from_file(
-        # f"https://storage.googleapis.com/storage/v1/b/{storageBucket}/o/media/{video.audio_clip.name}"
-        # video.audio_clip.name
-        # video.audio_clip.read()
-        # video.audio_clip.file
-        temp_audio
-    )
-
-    # blob.upload_from_filename(video.audio_clip.url)
+    blob.upload_from_file(temp_audio)
 
     transcripts = get_transcripts_json(
         os.path.join("gs://", storageBucket, tmpFile),
