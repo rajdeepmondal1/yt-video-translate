@@ -63,8 +63,11 @@ def download(request, id):
     print("filename", filename)
     print("gcs_path", gcs_path)
     if default_storage.exists(gcs_path):
-        return FileResponse(default_storage.open(gcs_path, "rb"))
-
+        print("default_storage.exists(gcs_path)")
+        return FileResponse(default_storage.open(gcs_path, "rb").read())
+    # bucket = storage_client.bucket(storageBucket)
+    # blob = bucket.blob(gcs_path)
+    # blob.download_to_filename(destination_file_name)
     # response = FileResponse(open(gcs_path, "rb"))
     # return response
 
