@@ -130,8 +130,10 @@ def downloadVideo(file_path, yt, yt_id, bucket):
         # filename="yt_original_download-" + yt_id + ".mp4",
     )  # , filename=f"{yt_id}"
     # blob.upload_from_filename(f"{my_temp}")
-
-    # upload_local_directory_to_gcs(local_path, bucket, gcs_path)
+    gcs_path = os.path.join(
+        "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
+    )
+    upload_local_directory_to_gcs(f"{file_path}/{yt_id}.mp4", bucket, gcs_path)
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
