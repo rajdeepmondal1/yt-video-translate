@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import glob
 import html
 import json
 import os
@@ -35,7 +34,6 @@ def download_yt_video(my_id, link):
         "yt_video_translate/video_translator/env/translate-af9005978349.json"
     )
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
-    # os.environ['STORAGE_BUCKET'] = "translate-001"
 
     yt = YouTube(f"{link}")
     yt_id = extract.video_id(f"{link}")
@@ -47,15 +45,12 @@ def download_yt_video(my_id, link):
         shutil.rmtree(os.path.join(settings.MEDIA_ROOT, "temp"), ignore_errors=True)
 
     file_path = os.path.join(settings.MEDIA_ROOT, "temp")
-    # storageBucket = "translate-001"
-    # storage_client = storage.Client()
-    # bucket = storage_client.bucket(storageBucket)
 
     video.youtube_url = f"{link}"
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(file_path, yt, yt_id)  # file_path
+    file_content_video = downloadVideo(file_path, yt, yt_id)
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
@@ -72,39 +67,45 @@ def download_yt_video(my_id, link):
 
     """Translate Audio from One Language to another"""
     """EDIT AFTER DRAFT"""
-    srcLang = "en"
-    targetLang = "hi"
+    sourceLanguage = "en"
+    targetLanguage = "hi"
     speakerCount = 2
     # bn - IN - Wavenet - A
 
     # hi - IN - Wavenet - C
     # "bn": "bn-IN-Wavenet-B"
     # "hi": "hi-IN-Wavenet-C"
-    outFile = translation_to_target_language(
+    outputFile = translation_to_target_language(
         video,
         temp_audio,
         temp_silent_video,
         yt_id,
-        srcLang,
+        sourceLanguage,
         file_path,
-        targetLang,
+        targetLanguage,
         {"hi": "hi-IN-Wavenet-C"},
         [],
         speakerCount,
     )
 
-    video.translated_video_clip.save("translated_video.mp4", outFile)
-
-    """END OF EDIT AFTER DRAFT"""
+    video.translated_video_clip.save("translated_video.mp4", outputFile)
 
     """Add the Translated Audio to the Silent Video"""
-
-    # USE IT AFTER TEST
     shutil.rmtree(file_path, ignore_errors=True)
 
 
 def downloadVideo(file_path, yt, yt_id):
-    """Download Video and save it into a model"""
+    """Download Video from a given YouTube Link and convert it into ContentFile.
+
+    Args:
+        file_path: Path to save the output file.
+        yt: YouTube object we are working with.
+        yt_id: YouTube ID of the object we are working with.
+
+    Returns:
+        ContentFile: Returns the file downloaded.
+    """
+
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(output_path=f"{file_path}", filename=f"{yt_id}")
@@ -116,7 +117,15 @@ def downloadVideo(file_path, yt, yt_id):
 
 
 def audioFromVideo(video_file, temp_audio):
-    """Extract Audio from the Downloaded Video File"""
+    """Extract Audio from the Downloaded Video File and convert it into ContentFile.
+
+    Args:
+        video_file: Video File to process and extract the audio from.
+        temp_audio: Temporary location to store the audio after extracting from the video file.
+
+    Returns:
+        ContentFile: Returns the audio of the after extracting from the file downloaded.
+    """
     mp.VideoFileClip(video_file).audio.write_audiofile(
         f"{temp_audio.name}", ffmpeg_params=["-ac", "1"]
     )
@@ -139,13 +148,17 @@ def removeAudioFromVideo(video_file, temp_silent_video):
     return ContentFile(file_content_silent_video)
 
 
-def get_transcripts_json(
-    gcsPath, langCode, phraseHints=[], speakerCount=1, enhancedModel=None
+def getTranscriptsInJSON(
+    googleCloudStoragePath,
+    languageCode,
+    phraseHints=[],
+    speakerCount=1,
+    enhancedModel=None,
 ):
     """Transcribes audio files.
     Args:
-        gcsPath (String): path to file in cloud storage (i.e. "gs://audio/clip.mp4")
-        langCode (String): language code (i.e. "en-US", see https://cloud.google.com/speech-to-text/docs/languages)
+        googleCloudStoragePath (String): path to file in cloud storage (i.e. "gs://audio/clip.mp4")
+        languageCode (String): language code (i.e. "en-US", see https://cloud.google.com/speech-to-text/docs/languages)
         phraseHints (String[]): list of words that are unusual but likely to appear in the audio file.
         speakerCount (int, optional): Number of speakers in the audio. Only works on English. Defaults to None.
         enhancedModel (String, optional): Option to use an enhanced speech model, i.e. "video"
@@ -153,7 +166,7 @@ def get_transcripts_json(
         list | Operation.error
     """
 
-    def _jsonify(result):
+    def convertToJSON(result):
         json = []
 
         for section in result.results:
@@ -171,7 +184,7 @@ def get_transcripts_json(
         return json
 
     client = speech.SpeechClient()
-    audio = speech.RecognitionAudio(uri=gcsPath)
+    audio = speech.RecognitionAudio(uri=googleCloudStoragePath)
 
     # diarize = speakerCount if speakerCount > 1 else False
     # print(f"Diarizing: {diarize}")
@@ -180,12 +193,12 @@ def get_transcripts_json(
     # )
 
     # In English only, we can use the optimized video model
-    if langCode == "en":
+    if languageCode == "en":
         enhancedModel = "video"
 
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        language_code="en-US" if langCode == "en" else langCode,
+        language_code="en-US" if languageCode == "en" else languageCode,
         enable_automatic_punctuation=True,
         enable_word_time_offsets=True,
         speech_contexts=[{"phrases": phraseHints, "boost": 15}],
@@ -200,19 +213,11 @@ def get_transcripts_json(
         # max_alternatives=2
     )
     res = client.long_running_recognize(config=config, audio=audio).result()
-
-    _first_words = []
-    for _result in res.results:
-        for _word in _result.alternatives[0].words:
-            _first_words.append(_word)
-            break
-    # first_words_reversed = first_words[::-1]
-    print("first_words", _first_words[::-1], len(_first_words) - 1)
-    return _jsonify(res)
+    return convertToJSON(res)
 
 
-def parse_sentence_2nd_try(json, lang):
-    """Takes json from get_transcripts_json and breaks it into sentences
+def breakIntoSentences(json, lang):
+    """Takes json from getTranscriptsInJSON and breaks it into sentences
     spoken by a single person. Sentences deliniated by a >= 1 second pause/
     Args:
         json (string[]): [{"transcript": "lalala",
@@ -282,12 +287,12 @@ def parse_sentence_2nd_try(json, lang):
     return return_sentences
 
 
-def translate_text(input, targetLang, sourceLang=None):
-    """Translates from sourceLang to targetLang. If sourceLang is empty,
+def translate_text(input, targetLanguage, sourceLang=None):
+    """Translates from sourceLang to targetLanguage. If sourceLang is empty,
     it will be auto-detected.
     Args:
         sentence (String): Sentence to translate
-        targetLang (String): i.e. "en"
+        targetLanguage (String): i.e. "en"
         sourceLang (String, optional): i.e. "es" Defaults to None.
     Returns:
         String: translated text
@@ -295,7 +300,7 @@ def translate_text(input, targetLang, sourceLang=None):
 
     translate_client = translate.Client()
     result = translate_client.translate(
-        input, target_language=targetLang, source_language=sourceLang
+        input, target_language=targetLanguage, source_language=sourceLang
     )
 
     return html.unescape(result["translatedText"])
@@ -387,32 +392,30 @@ def translation_to_target_language(
     temp_audio,
     temp_silent_video,
     yt_id,
-    srcLang,
+    sourceLanguage,
     file_path,
-    targetLang,
+    targetLanguage,
     voices={},
     phraseHints=[],
     speakerCount=1,
 ):
-    # storageBucket = storageBucket if storageBucket else os.environ['STORAGE_BUCKET']
     storageBucket = "translate-001"
     storage_client = storage.Client()
     bucket = storage_client.bucket(storageBucket)
-    tmpFile = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
-    blob = bucket.blob(tmpFile)
+    temp_file = os.path.join("tmp", str(uuid.uuid4()) + ".wav")
+    blob = bucket.blob(temp_file)
 
     blob.upload_from_file(temp_audio)
 
-    transcripts = get_transcripts_json(
-        os.path.join("gs://", storageBucket, tmpFile),
-        srcLang,
+    transcripts = getTranscriptsInJSON(
+        os.path.join("gs://", storageBucket, temp_file),
+        sourceLanguage,
         phraseHints=phraseHints,
         speakerCount=speakerCount,
     )
     json.dump(transcripts, open(os.path.join(file_path, "transcript.json"), "w"))
 
-    # sentences = parse_sentence_with_speaker(transcripts, srcLang)
-    sentences = parse_sentence_2nd_try(transcripts, srcLang)
+    sentences = breakIntoSentences(transcripts, sourceLanguage)
 
     fn = os.path.join(file_path, f"{yt_id}" + ".json")
     with open(fn, "w") as f:
@@ -423,40 +426,41 @@ def translation_to_target_language(
     sentences = json.load(open(fn))
 
     for sentence in sentences:
-        sentence[targetLang] = translate_text(sentence[srcLang], targetLang, srcLang)
+        sentence[targetLanguage] = translate_text(
+            sentence[sourceLanguage], targetLanguage, sourceLanguage
+        )
 
     with open(fn, "w") as f:
         json.dump(sentences, f)
 
-    audioDir = os.path.join(file_path, "audioClips")
-    os.mkdir(audioDir)
-    languageDir = os.path.join(audioDir, targetLang)
-    os.mkdir(languageDir)
+    audioDirectory = os.path.join(file_path, "audioDirectory")
+    os.mkdir(audioDirectory)
+    languageDirectory = os.path.join(audioDirectory, targetLanguage)
+    os.mkdir(languageDirectory)
 
     for i, sentence in enumerate(sentences):
-        voiceName = voices[targetLang] if targetLang in voices else None
+        voiceName = voices[targetLanguage] if targetLanguage in voices else None
         audio = speakUnderDuration(
-            sentence[targetLang],
-            targetLang,
+            sentence[targetLanguage],
+            targetLanguage,
             file_path,
             (sentence["end_time"] - sentence["start_time"]),
             voiceName=voiceName,
         )
-        with open(os.path.join(languageDir, f"{i}.mp3"), "wb") as f:
+        with open(os.path.join(languageDirectory, f"{i}.mp3"), "wb") as f:
             f.write(audio)
 
-    translatedDir = os.path.join(file_path, "translatedVideos")
-    os.mkdir(translatedDir)
-    # outFile = os.path.join(translatedDir, targetLang + ".mp4")
-    outFile = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+    translatedDirectory = os.path.join(file_path, "translatedVideos")
+    os.mkdir(translatedDirectory)
+    outputFile = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
 
-    audioFiles = os.listdir(languageDir)
+    audioFiles = os.listdir(languageDirectory)
     audioFiles.sort(key=lambda x: int(x.split(".")[0]))
 
     segments = []
 
     for i, sentence in enumerate(sentences):
-        audio_file = os.path.join(languageDir, f"{i}.mp3")
+        audio_file = os.path.join(languageDirectory, f"{i}.mp3")
         segments.append(AudioFileClip(audio_file).set_start(sentence["start_time"]))
 
     dubbed = CompositeAudioClip(segments)
@@ -464,8 +468,8 @@ def translation_to_target_language(
     clip = VideoFileClip(f"{temp_silent_video.name}")
     clip = clip.set_audio(dubbed)
 
-    clip.write_videofile(f"{outFile.name}", codec="libx264", audio_codec="aac")
-    with open(f"{outFile.name}", "rb") as fp:
+    clip.write_videofile(f"{outputFile.name}", codec="libx264", audio_codec="aac")
+    with open(f"{outputFile.name}", "rb") as fp:
         fp.seek(0)
         output = fp.read()
         fp.close()
@@ -493,21 +497,3 @@ def task_failure_notifier(sender=None, **kwargs):
 def task_success_notifier(sender=None, **kwargs):
     sender.request.id
     print("From task_success_notifier ==> Task run successfully!")
-
-
-def upload_local_directory_to_gcs(local_path, bucket, gcs_path):
-    # assert os.path.isdir(local_path)
-    for local_file in glob.glob(local_path + "/**"):
-        if not os.path.isfile(local_file):
-            upload_local_directory_to_gcs(
-                local_file, bucket, gcs_path + "/" + os.path.basename(local_file)
-            )
-        else:
-            my_local_file_len = 1 + len(local_path)
-            my_local_file = local_file[my_local_file_len:]
-            remote_path = os.path.join(gcs_path, my_local_file)
-            blob = bucket.blob(remote_path)
-            blob.upload_from_filename(local_file)
-
-
-# upload_local_directory_to_gcs(local_path, bucket, BUCKET_FOLDER_DIR)
