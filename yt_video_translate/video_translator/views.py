@@ -58,7 +58,7 @@ def download(request, id):
     obj = Video.objects.get(id=id)
     storageBucket = "translate-001"
     filename = obj.translated_video_clip.name
-    gcs_path = os.path.join("gs://", storageBucket, filename)
+    gcs_path = os.path.join("gs://", storageBucket, "media", filename)
     print("download")
     print("filename", filename)
     print("gcs_path", gcs_path)
