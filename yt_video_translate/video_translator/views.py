@@ -60,7 +60,7 @@ def download(request, id):
     obj = Video.objects.get(id=id)
     storageBucket = "translate-001"
     final_path = os.path.join(
-        settings.MEDIA_ROOT, "temp", "translated - {obj.youtube_title}.mp4"
+        settings.MEDIA_ROOT, "temp"  # , "translated - {obj.youtube_title}.mp4"
     )
     filename = obj.translated_video_clip.name
     subprocess.call(
