@@ -57,7 +57,7 @@ def download_yt_video(my_id, link):
     video.youtube_title = yt.title
 
     """Download Video and save it into a model"""
-    file_content_video = downloadVideo(yt, yt_id, bucket)  # file_path
+    file_content_video = downloadVideo(file_path, yt, yt_id, bucket)  # file_path
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
@@ -110,28 +110,32 @@ def download_yt_video(my_id, link):
     # shutil.rmtree(file_path, ignore_errors=True)
 
 
-def downloadVideo(yt, yt_id, bucket):
+def downloadVideo(file_path, yt, yt_id, bucket):
     """Download Video and save it into a model"""
-    my_temp = os.path.join("gs://", "translate-001", "temp", "temp.mp4")
-    yt_original_download = os.path.join(
-        "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
-    )
+    # my_temp = os.path.join("gs://", "translate-001", "temp", "temp.mp4")
+    # yt_original_download = os.path.join(
+    #     "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
+    # )
+    # upload_local_directory_to_gcs
     # temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-    blob = bucket.blob(my_temp)
-    blob = bucket.blob(yt_original_download)
+    # blob = bucket.blob(my_temp)
+    # blob = bucket.blob(yt_original_download)
 
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
         "resolution"
     ).desc().first().download(
-        output_path=f"{my_temp}",
+        output_path=f"{file_path}",
+        filename=f"{yt_id}"
         # filename=f"{yt_original_download}",
         # filename="yt_original_download-" + yt_id + ".mp4",
     )  # , filename=f"{yt_id}"
-    blob.upload_from_filename(f"{my_temp}")
+    # blob.upload_from_filename(f"{my_temp}")
+
+    # upload_local_directory_to_gcs(local_path, bucket, gcs_path)
 
     # with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
 
-    with open(yt_original_download, "rb") as fp:
+    with open(f"{file_path}/{yt_id}.mp4", "rb") as fp:
         fp.seek(0)
         file_content_video = fp.read()
         fp.close()
