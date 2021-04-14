@@ -58,6 +58,10 @@ def video_index(request):
 
 def download(request, id):
     obj = Video.objects.get(id=id)
+    credential_path = (
+        "yt_video_translate/video_translator/env/translate-af9005978349.json"
+    )
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
     storageBucket = "translate-001"
     filename = obj.translated_video_clip.name
     gcs_path = os.path.join("gs://", storageBucket, "media", filename)
