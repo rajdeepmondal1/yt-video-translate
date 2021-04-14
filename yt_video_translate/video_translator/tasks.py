@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import base64
+import glob
 import html
 import json
 import os
@@ -116,6 +117,7 @@ def downloadVideo(yt, yt_id, bucket):
         "gs://", "translate-001", "temp", "yt_original_download-" + yt_id + ".mp4"
     )
     # temp_yt_original = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+    blob = bucket.blob(my_temp)
     blob = bucket.blob(yt_original_download)
 
     yt.streams.filter(progressive=True, file_extension="mp4").order_by(
@@ -547,3 +549,21 @@ def task_failure_notifier(sender=None, **kwargs):
 def task_success_notifier(sender=None, **kwargs):
     sender.request.id
     print("From task_success_notifier ==> Task run successfully!")
+
+
+def upload_local_directory_to_gcs(local_path, bucket, gcs_path):
+    assert os.path.isdir(local_path)
+    for local_file in glob.glob(local_path + "/**"):
+        if not os.path.isfile(local_file):
+            upload_local_directory_to_gcs(
+                local_file, bucket, gcs_path + "/" + os.path.basename(local_file)
+            )
+        else:
+            my_local_file_len = 1 + len(local_path)
+            my_local_file = local_file[my_local_file_len:]
+            remote_path = os.path.join(gcs_path, my_local_file)
+            blob = bucket.blob(remote_path)
+            blob.upload_from_filename(local_file)
+
+
+# upload_local_directory_to_gcs(local_path, bucket, BUCKET_FOLDER_DIR)
