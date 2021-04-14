@@ -1,11 +1,13 @@
 import os
+import shutil
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.core.files.storage import default_storage
 from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from google.cloud import storage
 
 from .forms import Video_form
 from .models import Video
@@ -59,12 +61,22 @@ def download(request, id):
     storageBucket = "translate-001"
     filename = obj.translated_video_clip.name
     gcs_path = os.path.join("gs://", storageBucket, "media", filename)
+    finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
     print("download")
     print("filename", filename)
     print("gcs_path", gcs_path)
-    if default_storage.exists(gcs_path):
-        print("default_storage.exists(gcs_path)")
-        return FileResponse(default_storage.open(gcs_path, "rb").read())
+    print("finalTranslatedFile", finalTranslatedFile)
+    final_path = os.path.join(settings.MEDIA_ROOT, "temp", "final.mp4")
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(storageBucket)
+    blob = bucket.blob(finalTranslatedFile)
+    blob.download_to_filename(f"{final_path}")
+
+    response = FileResponse(open(f"{final_path}", "rb"))
+    shutil.rmtree(final_path, ignore_errors=True)
+    return response
+
     # bucket = storage_client.bucket(storageBucket)
     # blob = bucket.blob(gcs_path)
     # blob.download_to_filename(destination_file_name)

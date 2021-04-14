@@ -472,6 +472,10 @@ def translation_to_target_language(
         fp.seek(0)
         output = fp.read()
         fp.close()
+    finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
+    blob = bucket.blob(finalTranslatedFile)
+
+    blob.upload_from_file(outFile)
     return ContentFile(output)
 
 
