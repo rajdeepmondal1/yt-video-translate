@@ -59,7 +59,9 @@ def video_index(request):
 def download(request, id):
     obj = Video.objects.get(id=id)
     storageBucket = "translate-001"
-    final_path = os.path.join(settings.MEDIA_ROOT, "temp", "final.mp4")
+    final_path = os.path.join(
+        settings.MEDIA_ROOT, "temp", "translated - {obj.youtube_title}.mp4"
+    )
     filename = obj.translated_video_clip.name
     subprocess.call(
         f"gsutil cp gs://{storageBucket}/media/{filename} {final_path}", shell=True
