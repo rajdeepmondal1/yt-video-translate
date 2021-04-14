@@ -409,10 +409,6 @@ def translation_to_target_language(
         phraseHints=phraseHints,
         speakerCount=speakerCount,
     )
-    # transcripts = parse_sentence_2nd_try(os.path.join(
-    #     "gs://", storageBucket, tmpFile), srcLang,
-    #     phraseHints=phraseHints,
-    #     speakerCount=speakerCount, )
     json.dump(transcripts, open(os.path.join(file_path, "transcript.json"), "w"))
 
     # sentences = parse_sentence_with_speaker(transcripts, srcLang)
@@ -473,10 +469,6 @@ def translation_to_target_language(
         fp.seek(0)
         output = fp.read()
         fp.close()
-    # finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
-    # blob = bucket.blob(finalTranslatedFile)
-    # blob.upload_from_file(outFile)
-
     return ContentFile(output)
 
 
