@@ -523,7 +523,7 @@ def translation_to_target_language(
 
     dubbed = CompositeAudioClip(segments)
 
-    clip = VideoFileClip(temp_silent_video)
+    clip = VideoFileClip(f"{temp_silent_video.name}")
     clip = clip.set_audio(dubbed)
 
     clip.write_videofile(outFile, codec="libx264", audio_codec="aac")
