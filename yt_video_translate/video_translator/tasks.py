@@ -451,7 +451,8 @@ def translation_to_target_language(
 
     translatedDir = os.path.join(file_path, "translatedVideos")
     os.mkdir(translatedDir)
-    outFile = os.path.join(translatedDir, targetLang + ".mp4")
+    # outFile = os.path.join(translatedDir, targetLang + ".mp4")
+    outFile = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
 
     audioFiles = os.listdir(languageDir)
     audioFiles.sort(key=lambda x: int(x.split(".")[0]))
@@ -467,14 +468,14 @@ def translation_to_target_language(
     clip = VideoFileClip(f"{temp_silent_video.name}")
     clip = clip.set_audio(dubbed)
 
-    clip.write_videofile(outFile, codec="libx264", audio_codec="aac")
-    with open(f"{outFile}", "rb") as fp:
+    clip.write_videofile(f"{outFile.name}", codec="libx264", audio_codec="aac")
+    with open(f"{outFile.name}", "rb") as fp:
         fp.seek(0)
         output = fp.read()
         fp.close()
     finalTranslatedFile = os.path.join("tmp", "finalTranslatedFile" + ".mp4")
     blob = bucket.blob(finalTranslatedFile)
-    blob.upload_from_file(f"{outFile}")
+    blob.upload_from_file(outFile)
 
     return ContentFile(output)
 
