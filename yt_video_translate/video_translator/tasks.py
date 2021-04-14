@@ -5,6 +5,7 @@ import glob
 import html
 import json
 import os
+import shutil
 import tempfile
 import uuid
 
@@ -42,6 +43,9 @@ def download_yt_video(my_id, link):
 
     temp_audio = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     temp_silent_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+
+    if os.path.exists(os.path.join(settings.MEDIA_ROOT, "temp")):
+        shutil.rmtree(os.path.join(settings.MEDIA_ROOT, "temp"), ignore_errors=True)
 
     file_path = os.path.join(settings.MEDIA_ROOT, "temp")
     storageBucket = "translate-001"
