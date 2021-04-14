@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponseRedirect
@@ -53,8 +55,10 @@ def video_index(request):
 
 def download(request, id):
     obj = Video.objects.get(id=id)
-    filename = obj.translated_video_clip.path
-    response = FileResponse(open(filename, "rb"))
+    storageBucket = "translate-001"
+    filename = obj.translated_video_clip.name
+    gcs_path = (os.path.join("gs://", storageBucket, filename),)
+    response = FileResponse(open(gcs_path, "rb"))
     return response
 
 
