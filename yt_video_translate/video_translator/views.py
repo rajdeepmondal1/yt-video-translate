@@ -58,6 +58,9 @@ def download(request, id):
     storageBucket = "translate-001"
     filename = obj.translated_video_clip.name
     gcs_path = os.path.join("gs://", storageBucket, filename)
+    print("download")
+    print("filename", filename)
+    print("gcs_path", gcs_path)
     response = FileResponse(open(gcs_path, "rb"))
     return response
 

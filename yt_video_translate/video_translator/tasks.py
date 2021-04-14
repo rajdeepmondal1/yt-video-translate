@@ -73,7 +73,7 @@ def download_yt_video(my_id, link):
     """Translate Audio from One Language to another"""
     """EDIT AFTER DRAFT"""
     srcLang = "en"
-    targetLang = "bn"
+    targetLang = "hi"
     speakerCount = 2
     # bn - IN - Wavenet - A
 
