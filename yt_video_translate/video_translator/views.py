@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 
+from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from django.http import FileResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+# from django.shortcuts import redirect
 from .forms import Video_form
 from .models import Video
 from .tasks import download_yt_video
@@ -22,8 +24,8 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            download_yt_video.delay(request.user.id, link)
-
+            task = download_yt_video.delay(request.user.id, link)
+            task_id = task.task_id
             # while task.state not in ("SUCCESS", "FAILURE"):
             #     time.sleep(0.1)
             # if task.failed():
@@ -34,16 +36,44 @@ def video_index(request):
             #             "form": form,
             #         },
             #     )
-            my_user = User(id=request.user.id)
-            current_file = (
-                Video.objects.filter(user=my_user).order_by("-created").first()
-            )
-            flag = 0 if current_file is None else 1
-            return render(
-                request,
-                "video_translator/task_processing.html",
-                {"flag": flag},
-            )
+            res = AsyncResult(task_id)
+            # if res.state == state(SUCCESS):
+            if res.state in ("SUCCESS"):
+                my_user = User(id=request.user.id)
+                current_file = (
+                    Video.objects.filter(user=my_user).order_by("-created").first()
+                )
+                return HttpResponseRedirect(
+                    reverse(
+                        "video_translator:current_processed_file",
+                        args={
+                            # "app_name": video_translator,
+                            "task_id": task_id,
+                            "current_file": current_file,
+                        },
+                    )
+                )
+                # return redirect(
+                #     reverse(
+                #         current_processed_file,
+                #         kwargs={
+                #             "app_name": video_translator,
+                #             "task_id": task_id,
+                #             "current_file": current_file,
+                #         },
+                #     )
+                # )
+            else:
+                my_user = User(id=request.user.id)
+                current_file = (
+                    Video.objects.filter(user=my_user).order_by("-created").first()
+                )
+                flag = 0 if current_file is None else 1
+                return render(
+                    request,
+                    "video_translator/task_processing.html",
+                    {"flag": flag},
+                )
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
     else:

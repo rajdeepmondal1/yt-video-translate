@@ -78,7 +78,6 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_userforeignkey",
     "celery",
-    "celery_progress",
 ]
 
 LOCAL_APPS = [
