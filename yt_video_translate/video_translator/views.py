@@ -37,8 +37,7 @@ def video_index(request):
             #         },
             #     )
             res = AsyncResult(task_id)
-            # if res.state == state(SUCCESS):
-            if res.state in ("SUCCESS"):
+            if res.ready():
                 my_user = User(id=request.user.id)
                 current_file = (
                     Video.objects.filter(user=my_user).order_by("-created").first()
@@ -53,16 +52,7 @@ def video_index(request):
                         },
                     )
                 )
-                # return redirect(
-                #     reverse(
-                #         current_processed_file,
-                #         kwargs={
-                #             "app_name": video_translator,
-                #             "task_id": task_id,
-                #             "current_file": current_file,
-                #         },
-                #     )
-                # )
+                # return render_to_response('ajax_fragment.html', {'results': results.get()})
             else:
                 my_user = User(id=request.user.id)
                 current_file = (
@@ -74,6 +64,43 @@ def video_index(request):
                     "video_translator/task_processing.html",
                     {"flag": flag},
                 )
+            # if res.state == state(SUCCESS):
+            # if res.state in ("SUCCESS"):
+            #     my_user = User(id=request.user.id)
+            #     current_file = (
+            #         Video.objects.filter(user=my_user).order_by("-created").first()
+            #     )
+            #     return HttpResponseRedirect(
+            #         reverse(
+            #             "video_translator:current_processed_file",
+            #             args={
+            #                 # "app_name": video_translator,
+            #                 "task_id": task_id,
+            #                 "current_file": current_file,
+            #             },
+            #         )
+            #     )
+            # return redirect(
+            #     reverse(
+            #         current_processed_file,
+            #         kwargs={
+            #             "app_name": video_translator,
+            #             "task_id": task_id,
+            #             "current_file": current_file,
+            #         },
+            #     )
+            # )
+            # else:
+            #     my_user = User(id=request.user.id)
+            #     current_file = (
+            #         Video.objects.filter(user=my_user).order_by("-created").first()
+            #     )
+            #     flag = 0 if current_file is None else 1
+            #     return render(
+            #         request,
+            #         "video_translator/task_processing.html",
+            #         {"flag": flag},
+            #     )
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
     else:
