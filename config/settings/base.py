@@ -77,6 +77,8 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "django_userforeignkey",
+    "celery",
+    "celery_progress",
 ]
 
 LOCAL_APPS = [
