@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 
-# from celery.result import AsyncResult
+from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -36,7 +36,7 @@ def video_index(request):
             #             "form": form,
             #         },
             #     )
-            res = task.AsyncResult(task_id).get()  # ready()
+            res = AsyncResult(task_id).get()  # ready()
             if res:  # .successful()
                 my_user = User(id=request.user.id)
                 current_file = (
