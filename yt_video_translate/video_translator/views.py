@@ -36,8 +36,8 @@ def video_index(request):
             #             "form": form,
             #         },
             #     )
-            res = AsyncResult(task_id).get()  # ready()
-            if res:  # .successful()
+            res = AsyncResult(task_id).get(interval=10)  # ready()
+            if res.successful():  # .successful()
                 my_user = User(id=request.user.id)
                 current_file = (
                     Video.objects.filter(user=my_user).order_by("-created").first()
