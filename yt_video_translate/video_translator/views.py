@@ -36,7 +36,7 @@ def video_index(request):
             #             "form": form,
             #         },
             #     )
-            res = AsyncResult(task_id).get(interval=10)  # ready()
+            res = AsyncResult(task_id).get(timeout=10)  # ready()
             if res.successful():  # .successful()
                 my_user = User(id=request.user.id)
                 current_file = (
