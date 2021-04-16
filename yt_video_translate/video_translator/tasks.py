@@ -12,6 +12,8 @@ from celery.signals import task_failure, task_postrun, task_prerun, task_success
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from google.cloud import speech_v1p1beta1 as speech
 from google.cloud import storage, texttospeech
 from google.cloud import translate_v2 as translate
@@ -497,3 +499,4 @@ def task_failure_notifier(sender=None, **kwargs):
 def task_success_notifier(sender=None, **kwargs):
     sender.request.id
     print("From task_success_notifier ==> Task run successfully!")
+    return HttpResponseRedirect(reverse("video_translator:current_processed_file"))

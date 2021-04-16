@@ -59,8 +59,13 @@ def video_index(request):
 def download(request, id):
     obj = Video.objects.get(id=id)
     storageBucket = "translate-001"
+    if os.path.exists(os.path.join(settings.MEDIA_ROOT, "temporary-translated")):
+        shutil.rmtree(
+            os.path.join(settings.MEDIA_ROOT, "temporary-translated"),
+            ignore_errors=True,
+        )
     final_path = os.path.join(
-        settings.MEDIA_ROOT, "temp"  # , "translated - {obj.youtube_title}.mp4"
+        settings.MEDIA_ROOT, "temporary-translated", "translated.mp4"
     )
     filename = obj.translated_video_clip.name
     subprocess.call(
