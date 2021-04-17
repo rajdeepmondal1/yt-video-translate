@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import time
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -28,6 +29,7 @@ def video_index(request):
             print("video.id from views - video_index", video.id)
             # video_pk =get_id.delay()
             download_yt_video.delay(request.user.id, link, video.id)
+            time.sleep(5)
             return redirect("video_translator:currently_translating", pk=video.id)
             # task_id = task.task_id
             # my_user = User(id=request.user.id)
@@ -127,11 +129,11 @@ def translating_status_view(request, pk):
 
 @login_required
 def currently_translating(request, pk):
-    my_user = User(id=request.user.id)
-    current_file = Video.objects.filter(user=my_user).order_by("-created").first()
-    flag = 0 if current_file is None else 1
+    # my_user = User(id=request.user.id)
+    # current_file = Video.objects.filter(user=my_user).order_by("-created").first()
+    # flag = 0 if current_file is None else 1
     return render(
         request,
         "video_translator/task_processing.html",
-        {"flag": flag},
+        # {"flag": flag},
     )
