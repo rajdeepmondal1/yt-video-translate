@@ -26,7 +26,7 @@ def video_index(request):
             video = Video(user=request.user)
             print("video.id from views - video_index", video.id)
             # video_pk =get_id.delay()
-            download_yt_video.delay(request.user.id, link)
+            download_yt_video.delay(request.user.id, link, video.id)
             return redirect("video_translator:currently_translating", pk=video.id)
             # task_id = task.task_id
             # my_user = User(id=request.user.id)
