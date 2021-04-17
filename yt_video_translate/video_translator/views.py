@@ -25,7 +25,7 @@ def video_index(request):
             my_user = User(id=request.user.id)
             video = Video(user=my_user)
             download_yt_video.delay(request.user.id, link, my_user, video)
-            return redirect("video_translator:currently_processing", pk=video.pk)
+            return redirect("video_translator:currently_translating", pk=video.pk)
             # task_id = task.task_id
             # my_user = User(id=request.user.id)
             # current_file = (
