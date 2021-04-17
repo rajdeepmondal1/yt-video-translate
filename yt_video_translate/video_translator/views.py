@@ -24,8 +24,9 @@ def video_index(request):
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
             my_user = User(id=request.user.id)
-            video = Video(user=my_user)
-            video.is_translated = False
+            # video = Video(user=my_user)
+            # video.is_translated = False
+            video = Video.objects.create(user=my_user)
             print("video.id from views - video_index", video.id)
             # video_pk =get_id.delay()
             download_yt_video.delay(request.user.id, link, video.id)
