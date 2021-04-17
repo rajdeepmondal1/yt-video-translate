@@ -33,7 +33,7 @@ User = get_user_model()
 def download_yt_video(my_id, link, video_id):
     my_user = User(id=my_id)
     # video = Video(user=my_user)
-    video = Video.objects.get(id=video_id, user=my_user)
+    video = Video.objects.get(pk=video_id, user=my_user)
     video.save(commit=False)
     print("video.id from tasks - download_yt_video", video.id)
 
