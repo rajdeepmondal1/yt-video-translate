@@ -7,9 +7,9 @@
 //     });
 // });
 
-document.getElementById("input_form").onsubmit = function () {
+document.getElementById("input_form").onclick = function () {
   const url = `${location.pathname}status/`;
-  const redirectURL = `${location.pathname}translated`;
+  const redirectURL = `${location.pathname}translated/`;
   const checkStatus = () => {
     console.log("Checking article status.");
     fetch(url).then((resp) => {
