@@ -31,9 +31,9 @@ User = get_user_model()
 
 @celery_app.task(soft_time_limit=10000)
 def download_yt_video(my_id, link, video_id):
-    # my_user = User(id=my_id)
+    my_user = User(id=my_id)
     # video = Video(user=my_user)
-    video = Video.objects.get(id=video_id)
+    video = Video.objects.get(id=video_id, user=my_user)
     video.save(commit=False)
     print("video.id from tasks - download_yt_video", video.id)
 
