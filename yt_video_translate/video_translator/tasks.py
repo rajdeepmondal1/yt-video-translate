@@ -94,9 +94,9 @@ def download_yt_video(my_id, link):
         [],
         speakerCount,
     )
-
-    video.translated_video_clip.save("translated_video.mp4", outputFile)
-    video.is_translated = True
+    if outputFile:
+        video.is_translated = True
+        video.translated_video_clip.save("translated_video.mp4", outputFile)
 
     """Add the Translated Audio to the Silent Video"""
     shutil.rmtree(file_path, ignore_errors=True)
