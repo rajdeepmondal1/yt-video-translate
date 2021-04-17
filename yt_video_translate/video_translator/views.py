@@ -26,7 +26,7 @@ def video_index(request):
             my_user = User(id=request.user.id)
             # video = Video(user=my_user)
             # video.is_translated = False
-            video = Video.objects.create(user=my_user)
+            video = Video(user=my_user)
             video.save()
             print("video.id from views - video_index", video.id)
             # video_pk =get_id.delay()
