@@ -2,15 +2,13 @@ import os
 import shutil
 import subprocess
 
-from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
-# from django.shortcuts import redirect
 from .forms import Video_form
 from .models import Video
 from .tasks import download_yt_video
@@ -24,83 +22,21 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            task = download_yt_video.delay(request.user.id, link)
-            task_id = task.task_id
-            # while task.state not in ("SUCCESS", "FAILURE"):
-            #     time.sleep(0.1)
-            # if task.failed():
-            #     return render(
-            #         request,
-            #         "video_translator/video_index.html",
-            #         {
-            #             "form": form,
-            #         },
-            #     )
-            res = AsyncResult(task_id).get(timeout=10)  # ready()
-            if res.successful():  # .successful()
-                my_user = User(id=request.user.id)
-                current_file = (
-                    Video.objects.filter(user=my_user).order_by("-created").first()
-                )
-                return HttpResponseRedirect(
-                    reverse(
-                        "video_translator:current_processed_file",
-                        args={
-                            # "app_name": video_translator,
-                            "task_id": task_id,
-                            "current_file": current_file,
-                        },
-                    )
-                )
-                # return render_to_response('ajax_fragment.html', {'results': results.get()})
-            else:
-                my_user = User(id=request.user.id)
-                current_file = (
-                    Video.objects.filter(user=my_user).order_by("-created").first()
-                )
-                flag = 0 if current_file is None else 1
-                return render(
-                    request,
-                    "video_translator/task_processing.html",
-                    {"flag": flag},
-                )
-            # if res.state == state(SUCCESS):
-            # if res.state in ("SUCCESS"):
-            #     my_user = User(id=request.user.id)
-            #     current_file = (
-            #         Video.objects.filter(user=my_user).order_by("-created").first()
-            #     )
-            #     return HttpResponseRedirect(
-            #         reverse(
-            #             "video_translator:current_processed_file",
-            #             args={
-            #                 # "app_name": video_translator,
-            #                 "task_id": task_id,
-            #                 "current_file": current_file,
-            #             },
-            #         )
-            #     )
-            # return redirect(
-            #     reverse(
-            #         current_processed_file,
-            #         kwargs={
-            #             "app_name": video_translator,
-            #             "task_id": task_id,
-            #             "current_file": current_file,
-            #         },
-            #     )
+            my_user = User(id=request.user.id)
+            video = Video(user=my_user)
+            download_yt_video.delay(request.user.id, link, my_user, video)
+            return redirect("video_translator:currently_processing", pk=video.pk)
+            # task_id = task.task_id
+            # my_user = User(id=request.user.id)
+            # current_file = (
+            #     Video.objects.filter(user=my_user).order_by("-created").first()
             # )
-            # else:
-            #     my_user = User(id=request.user.id)
-            #     current_file = (
-            #         Video.objects.filter(user=my_user).order_by("-created").first()
-            #     )
-            #     flag = 0 if current_file is None else 1
-            #     return render(
-            #         request,
-            #         "video_translator/task_processing.html",
-            #         {"flag": flag},
-            #     )
+            # flag = 0 if current_file is None else 1
+            # return render(
+            #     request,
+            #     "video_translator/task_processing.html",
+            #     {"flag": flag},
+            # )
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
     else:
@@ -145,13 +81,54 @@ def my_uploads(request):
     )
 
 
-def current_processed_file(request):
+def current_processed_file(request, pk):
     my_user = User(id=request.user.id)
-    current_file = Video.objects.filter(user=my_user).order_by("-created").first()
+    current_file = (
+        Video.objects.filter(pk=pk, user=my_user).order_by("-created").first()
+    )
     return render(
         request,
         "video_translator/current_processed_file.html",
         {
             "current_file": current_file,
         },
+    )
+    # my_user = User(id=request.user.id)
+    # current_file = Video.objects.filter(user=my_user).order_by("-created").first()
+    # return render(
+    #     request,
+    #     "video_translator/current_processed_file.html",
+    #     {
+    #         "current_file": current_file,
+    #     },
+    # )
+
+
+@login_required
+def translating_status_view(request, pk):
+    my_user = User(id=request.user.id)
+    try:
+        translating = Video.objects.get(pk=pk, user=my_user)
+    except Video.DoesNotExist:
+        raise Http404()
+
+    if translating.is_translated:
+        code = 200  # OK
+    # elif translating.scraping_failed:
+    #     code = 422  # Unprocessable entity.
+    else:
+        code = 204  # No content - wait
+
+    return HttpResponse("", status=code)
+
+
+@login_required
+def currently_translating(request, pk):
+    my_user = User(id=request.user.id)
+    current_file = Video.objects.filter(user=my_user).order_by("-created").first()
+    flag = 0 if current_file is None else 1
+    return render(
+        request,
+        "video_translator/task_processing.html",
+        {"flag": flag},
     )
