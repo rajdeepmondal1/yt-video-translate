@@ -14,7 +14,7 @@ urlpatterns = [
     path("", video_index, name="video_index"),
     path("my_uploads/", my_uploads, name="my_uploads"),
     path(
-        "currently_translating/<uuid:pk>/translated",
+        "currently_translating/<uuid:pk>/translated/",
         current_processed_file,
         name="current_processed_file",
     ),

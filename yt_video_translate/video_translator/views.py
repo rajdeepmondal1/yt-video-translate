@@ -11,10 +11,7 @@ from django.urls import reverse
 
 from .forms import Video_form
 from .models import Video
-from .tasks import download_yt_video  # , get_id
-
-# import time
-
+from .tasks import download_yt_video
 
 User = get_user_model()
 
