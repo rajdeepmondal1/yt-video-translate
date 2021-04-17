@@ -43,6 +43,6 @@ class Video(models.Model):
         return str(self.youtube_title)
 
 
-class dummy(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+# class dummy(models.Model):
+#     created = models.DateTimeField(auto_now_add=True)
+#     modified = models.DateTimeField(auto_now=True)
