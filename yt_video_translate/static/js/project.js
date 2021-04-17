@@ -7,7 +7,7 @@
 //     });
 // });
 
-document.getElementById("input_form").onclick = function () {
+document.getElementById("translate_onclick").onclick = function () {
   const url = `${location.pathname}status/`;
   const redirectURL = `${location.pathname}translated/`;
   const checkStatus = () => {
