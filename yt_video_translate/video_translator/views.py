@@ -1,7 +1,6 @@
 import os
 import shutil
 import subprocess
-import time
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,6 +12,9 @@ from django.urls import reverse
 from .forms import Video_form
 from .models import Video
 from .tasks import download_yt_video  # , get_id
+
+# import time
+
 
 User = get_user_model()
 
@@ -37,7 +39,7 @@ def video_index(request):
             # print("video.id from views - video_index", video.pk)
             # # video_pk =get_id.delay()
             # download_yt_video.delay(request.user.id, link, video.id)
-            time.sleep(2)
+            # time.sleep(2)
             return redirect("video_translator:currently_translating", pk=task.id)
             # task_id = task.task_id
             # my_user = User(id=request.user.id)
