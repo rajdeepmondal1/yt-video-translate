@@ -72,7 +72,8 @@ GS_DEFAULT_ACL = "publicRead"
 # STATIC
 # ------------------------
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+# STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+STATICFILES_STORAGE = "yt_video_translate.utils.storages.WhiteNoiseStaticFilesStorage"
 # MEDIA
 # ------------------------------------------------------------------------------
 DEFAULT_FILE_STORAGE = "yt_video_translate.utils.storages.MediaRootGoogleCloudStorage"
