@@ -22,8 +22,9 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            # my_user = User(id=request.user.id)
-            video = Video(user=request.user)
+            my_user = User(id=request.user.id)
+            video = Video(user=my_user)
+            video.is_translated = False
             print("video.id from views - video_index", video.id)
             # video_pk =get_id.delay()
             download_yt_video.delay(request.user.id, link, video.id)
@@ -86,7 +87,7 @@ def my_uploads(request):
 def current_processed_file(request, pk):
     my_user = User(id=request.user.id)
     current_file = (
-        Video.objects.filter(pk=pk, user=my_user).order_by("-created").first()
+        Video.objects.filter(id=pk, user=my_user).order_by("-created").first()
     )
     return render(
         request,
@@ -110,7 +111,7 @@ def current_processed_file(request, pk):
 def translating_status_view(request, pk):
     my_user = User(id=request.user.id)
     try:
-        translating = Video.objects.get(pk=pk, user=my_user)
+        translating = Video.objects.get(id=pk, user=my_user)
     except Video.DoesNotExist:
         raise Http404()
 
