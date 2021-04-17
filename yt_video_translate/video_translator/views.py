@@ -22,9 +22,9 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            my_user = User(id=request.user.id)
-            video = Video(user=my_user)
-            download_yt_video.delay(request.user.id, link, my_user, video)
+            # my_user = User(id=request.user.id)
+            video = Video(user=request.user)
+            download_yt_video.delay(request.user.id, link, video)
             return redirect("video_translator:currently_translating", pk=video.pk)
             # task_id = task.task_id
             # my_user = User(id=request.user.id)
