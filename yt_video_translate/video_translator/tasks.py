@@ -188,6 +188,7 @@ def getTranscriptsInJSON(
                         "speaker_tag": word.speaker_tag,
                     }
                 )
+            data["words"].insert(0, data["words"][0])
             json.append(data)
         return json
 
@@ -224,14 +225,14 @@ def getTranscriptsInJSON(
     return convertToJSON(res)
 
 
-def breakIntoSentences(json, lang):
+def breakIntoSentences(json, language):
     """Takes json from getTranscriptsInJSON and breaks it into sentences
     spoken by a single person. Sentences deliniated by a >= 1 second pause/
     Args:
         json (string[]): [{"transcript": "lalala",
             "words": [{"word": "la", "start_time": 20,
                 "end_time": 21, "speaker_tag: 2}]}]
-        lang (string): language code, i.e. "en"
+        language (string): language code, i.e. "en"
     Returns:
         string[]: [{"sentence": "lalala", "speaker": 1, "start_time": 20, "end_time": 21}]
     """
@@ -240,19 +241,19 @@ def breakIntoSentences(json, lang):
     sentence = {}
     for result in json:
         for i, word in enumerate(result["words"]):
-            wordText = word["word"]  # get_word(word['word'], lang)
+            wordText = word["word"]
             if not sentence:
                 sentence = {
-                    lang: [wordText],
+                    language: [wordText],
                     "speaker": word["speaker_tag"],
                     "start_time": word["start_time"],
                     "end_time": word["end_time"],
                 }
             elif word["speaker_tag"] != sentence["speaker"]:
-                sentence[lang] = " ".join(sentence[lang])
+                sentence[language] = " ".join(sentence[language])
                 sentences.append(sentence)
                 sentence = {
-                    lang: [wordText],
+                    language: [wordText],
                     "speaker": word["speaker_tag"],
                     "start_time": word["start_time"],
                     "end_time": word["end_time"],
@@ -268,29 +269,29 @@ def breakIntoSentences(json, lang):
                 or (" !" in word["word"])
                 or ("! " in word["word"])
             ):
-                sentence[lang].append(word["word"])
-                sentence[lang].pop(0)
-                sentence[lang] = " ".join(sentence[lang])
+                sentence[language].append(word["word"])
+                sentence[language].pop(0)
+                sentence[language] = " ".join(sentence[language])
                 sentences.append(sentence)
 
                 sentence = {
-                    lang: [wordText],
+                    language: [wordText],
                     "speaker": word["speaker_tag"],
                     "start_time": word["start_time"],
                     "end_time": word["end_time"],
                 }
             else:
-                sentence[lang].append(wordText)
+                sentence[language].append(wordText)
                 sentence["end_time"] = word["end_time"]
         if sentence:
-            sentence[lang].pop(0)
-            sentence[lang] = " ".join(sentence[lang])
+            sentence[language].pop(0)
+            sentence[language] = " ".join(sentence[language])
             sentences.append(sentence)
             sentence = {}
 
     return_sentences = []
     for sentence in sentences:
-        if sentence[lang] != "":
+        if sentence[language] != "":
             return_sentences.append(sentence)
     return return_sentences
 
@@ -443,6 +444,9 @@ def translation_to_target_language(
     with open(fn, "w") as f:
         json.dump(sentences, f)
 
+    print("test transscript")
+    with open(fn, "r") as f:
+        print(f)
     audioDirectory = os.path.join(file_path, "audioDirectory")
     os.mkdir(audioDirectory)
     languageDirectory = os.path.join(audioDirectory, targetLanguage)
