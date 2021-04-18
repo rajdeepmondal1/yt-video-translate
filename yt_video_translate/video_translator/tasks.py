@@ -90,7 +90,7 @@ def download_yt_video(my_id, link):
         sourceLanguage,
         file_path,
         targetLanguage,
-        {"bn": "bn-IN-Wavenet-B"},
+        {"bn": "bn-IN-Wavenet-A"},
         [],
         speakerCount,
     )
@@ -284,20 +284,6 @@ def breakIntoSentences(json, language):
                     "start_time": word["start_time"],
                     "end_time": word["end_time"],
                 }
-            # elif(("um" in word["word"].lower())
-            # or ("umm" in word["word"].lower())
-            # or ("er" in word["word"].lower())
-            # or ("err" in word["word"].lower())
-            # or ("uh" in word["word"].lower())
-            # or ("uhh" in word["word"].lower())
-            # or ("hm" in word["word"].lower())
-            # or ("hmm" in word["word"].lower())
-            # or ("basically" in word["word"].lower())
-            # or ("seriously" in word["word"].lower())
-            # or ("actually" in word["word"].lower())
-
-            # ):
-            #     continue
             else:
                 sentence[language].append(wordText)
                 sentence["end_time"] = word["end_time"]
@@ -405,11 +391,13 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
         ratio = 1
 
     if ratio < 0.95:
-        ratio = ratio - 0.05
-    elif ratio > 1.05 and ratio < 1.16:
-        ratio = ratio + 0.09
-    elif ratio > 1.25:
-        ratio = 1.25
+        ratio = 0.95
+    elif ratio > 1.05 and ratio <= 1.21:
+        ratio = ratio + 0.08
+    elif ratio > 1.3 and ratio <= 1.4:
+        ratio = 1.35
+    elif ratio > 1.4:
+        ratio = 1.4
     else:
         return baseAudio
     return speak(text, languageCode, voiceName=voiceName, speakingRate=ratio)
@@ -462,9 +450,9 @@ def translation_to_target_language(
     with open(fn, "w") as f:
         json.dump(sentences, f)
 
-    print("test transscript")
-    with open(fn, "r") as f:
-        print(f)
+    # print("test transscript")
+    # with open(fn, "r") as f:
+    #     print(f)
     audioDirectory = os.path.join(file_path, "audioDirectory")
     os.mkdir(audioDirectory)
     languageDirectory = os.path.join(audioDirectory, targetLanguage)
