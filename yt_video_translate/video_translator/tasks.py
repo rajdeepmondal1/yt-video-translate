@@ -75,7 +75,7 @@ def download_yt_video(my_id, link):
     """Translate Audio from One Language to another"""
     """EDIT AFTER DRAFT"""
     sourceLanguage = "en"
-    targetLanguage = "hi"
+    targetLanguage = "bn"
     speakerCount = 2
     # bn - IN - Wavenet - A
 
@@ -90,7 +90,7 @@ def download_yt_video(my_id, link):
         sourceLanguage,
         file_path,
         targetLanguage,
-        {"hi": "hi-IN-Wavenet-C"},
+        {"bn": "bn-IN-Wavenet-B"},
         [],
         speakerCount,
     )
@@ -99,7 +99,7 @@ def download_yt_video(my_id, link):
         video.translated_video_clip.save("translated_video.mp4", outputFile)
 
     """Add the Translated Audio to the Silent Video"""
-    shutil.rmtree(file_path, ignore_errors=True)
+    # shutil.rmtree(file_path, ignore_errors=True)
 
 
 def downloadVideo(file_path, yt, yt_id):
@@ -188,7 +188,11 @@ def getTranscriptsInJSON(
                         "speaker_tag": word.speaker_tag,
                     }
                 )
-            data["words"].insert(0, data["words"][0])
+            if len(data["words"]) > 0:
+                try:
+                    data["words"].insert(0, data["words"][0])
+                except IndexError:
+                    pass
             json.append(data)
         return json
 
@@ -280,6 +284,20 @@ def breakIntoSentences(json, language):
                     "start_time": word["start_time"],
                     "end_time": word["end_time"],
                 }
+            # elif(("um" in word["word"].lower())
+            # or ("umm" in word["word"].lower())
+            # or ("er" in word["word"].lower())
+            # or ("err" in word["word"].lower())
+            # or ("uh" in word["word"].lower())
+            # or ("uhh" in word["word"].lower())
+            # or ("hm" in word["word"].lower())
+            # or ("hmm" in word["word"].lower())
+            # or ("basically" in word["word"].lower())
+            # or ("seriously" in word["word"].lower())
+            # or ("actually" in word["word"].lower())
+
+            # ):
+            #     continue
             else:
                 sentence[language].append(wordText)
                 sentence["end_time"] = word["end_time"]
