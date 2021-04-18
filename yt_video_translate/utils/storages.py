@@ -1,6 +1,6 @@
 from storages.backends.gcloud import GoogleCloudStorage
-from whitenoise.storage import (  # CompressedManifestStaticFilesStorage,
-    CompressedStaticFilesStorage,
+from whitenoise.storage import (  # CompressedManifestStaticFilesStorage,; CompressedStaticFilesStorage,
+    CompressedManifestStaticFilesStorage,
 )
 
 
@@ -14,9 +14,9 @@ class MediaRootGoogleCloudStorage(GoogleCloudStorage):
     file_overwrite = False
 
 
-# class WhiteNoiseStaticFilesStorage(CompressedManifestStaticFilesStorage):
-#     manifest_strict = False
-
-
-class WhiteNoiseStaticFilesStorage(CompressedStaticFilesStorage):
+class WhiteNoiseStaticFilesStorage(CompressedManifestStaticFilesStorage):
     manifest_strict = False
+
+
+# class WhiteNoiseStaticFilesStorage(CompressedStaticFilesStorage):
+#     manifest_strict = False
