@@ -2,27 +2,33 @@
 {% load static %}
 
 {% block content %}
-
-    <div class="text-center text-white bg-light">
+    <div class="text-center text-white">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
-                <h1 class="text-dark mb-2" style="font-family: Rubik, sans-serif;">Wanna translate a YouTube video from
-                    English to other language?</h1>
-            </div>
-            <form>
-                {#                        <div class="form-row">#}
-                {#                            <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg"#}
-                {#                                                                             type="email"#}
-                {#                                                                             placeholder="Enter YouTube Link..."></div>#}
-                <div class="d-flex justify-content-center align-items-center">
-                    <a class="btn btn-primary btn-lg"
-                       href="{% url 'video_translator:video_index' %}"
-                       role="button">Try it!</a>
-
+              <div class="col my-auto">
+                <div>
+                  <h1 class="text-dark mb-2" style="font-family: Rubik, sans-serif;"><strong>Wanna translate? </strong>  <span style="font-size: 0.75em;font-weight: 50;" >This tool can help.</span> </h1>
+                  <h5 class="text-dark mb-2" style="font-weight: 50;">This tool offers a way to translate a YouTube video from English to your preferred language(currently only Bengali).</h5>
                 </div>
-                {#                        </div>#}
-            </form>
+                <form>
+                  {#                        <div class="form-row">#}
+                  {#                            <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg"#}
+                  {#                                                                             type="email"#}
+                  {#                                                                             placeholder="Enter YouTube Link..."></div>#}
+                  <div class="d-flex justify-content-center align-items-center my-3">
+                      <a class="btn btn-primary btn-lg try_it_button"
+                         href="{% url 'video_translator:video_index' %}"
+                         role="button">Yes, I wanna Translate!</a>
+
+                  </div>
+                  {#                        </div>#}
+              </form>
+              </div>
+
+
+            </div>
+
         </div>
     </div>
     </div>

@@ -1,45 +1,113 @@
 /* These styles are generated from project.scss. */
 
 .alert-debug {
-    color: black;
-    background-color: white;
-    border-color: #d6e9c6;
+  color: black;
+  background-color: white;
+  border-color: #d6e9c6;
 }
 
 .alert-error {
-    color: #b94a48;
-    background-color: #f2dede;
-    border-color: #eed3d7;
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
 }
 
 .loading {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .loading--full-height {
-    align-items: center;
-    height: 100%;
+  align-items: center;
+  height: 100%;
 }
 
 .loading::after {
-    content: "";
-    width: 80px;
-    height: 80px;
-    border: 10px solid #dddddd;
-    border-top-color: #009579;
-    border-radius: 50%;
-    transform: rotate(0.16turn);
-    animation: loading 1s ease infinite;
+  content: "";
+  width: 80px;
+  height: 80px;
+  border: 10px solid #dddddd;
+  border-top-color: #009579;
+  border-radius: 50%;
+  transform: rotate(0.16turn);
+  animation: loading 1s ease infinite;
 }
 
 @keyframes loading {
-    /* Safari support */
-    from {
-        transform: rotate(0turn);
-    }
+  /* Safari support */
+  from {
+    transform: rotate(0turn);
+  }
 
-    to {
-        transform: rotate(1turn);
-    }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.form_container {
+  display: flex;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  -webkit-box-pack: center;
+  flex-direction: column;
+  /* -webkit-box-orient: column; */
+  /* -webkit-box-direction: column; */
+  text-align: center;
+}
+
+.try_it_button {
+  display: inline-block;
+  position: relative;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  box-sizing: border-box;
+  line-height: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-left: 0;
+  background: #ee4b2b;
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
+  text-decoration: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: undefined;
+}
+
+.translate_button {
+  display: inline-block;
+  position: relative;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  box-sizing: border-box;
+  line-height: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-left: 0;
+  background: #49baf2;
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
+  text-decoration: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: undefined;
 }

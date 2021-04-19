@@ -2,15 +2,15 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<div class="container" id="form_container">
+<div class="container form_container" id="form_container">
   <div class="row">
     <div class="d-flex justify-content-center align-items-center">
       <div class="col-xl-9 mx-auto">
         <h1
-          class="text-dark mb-5 justify-content-center"
+          class="text-dark mb-3 justify-content-center"
           style="font-family: Rubik, sans-serif;"
         >
-          Translate a YouTube video from English to other language
+          Translate a YouTube video from English to other language(currently only Bengali).
         </h1>
       </div>
     </div>
@@ -24,7 +24,7 @@
       >
         {% csrf_token %} {{ form|crispy }}
         <div id="translate_onclick" class="d-flex justify-content-center align-items-center">
-          <button type="submit" class="btn btn-primary btn-lg mx-auto">
+          <button type="submit" class="btn btn-primary btn-lg mx-auto translate_button" id="translate_button">
             Translate
           </button>
         </div>
