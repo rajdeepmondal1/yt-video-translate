@@ -27,26 +27,26 @@ checkStatus();
 setInterval(checkStatus, 2000);
 // };
 
-var start = document.getElementById("translate_button");
-var current_progress = 0;
-var step = 0.5; // the smaller this is the slower the progress bar
+// var start = document.getElementById("translate_button");
+// var current_progress = 0;
+// var step = 0.5; // the smaller this is the slower the progress bar
 
-start.onsubmit = function () {
-  interval = setInterval(function () {
-    current_progress += step;
-    progress =
-      Math.round((Math.atan(current_progress) / (Math.PI / 2)) * 100 * 1000) /
-      1000;
-    // $(".progress-bar")
-    document
-      .getElementById("my_progress_bar")
-      .css("width", progress + "%")
-      .attr("aria-valuenow", progress)
-      .text(progress + "%");
-    if (progress >= 100) {
-      clearInterval(interval);
-    } else if (progress >= 70) {
-      step = 0.1;
-    }
-  }, 100);
-};
+// start.onsubmit = function () {
+//   interval = setInterval(function () {
+//     current_progress += step;
+//     progress =
+//       Math.round((Math.atan(current_progress) / (Math.PI / 2)) * 100 * 1000) /
+//       1000;
+//     // $(".progress-bar")
+//     document
+//       .getElementById("my_progress_bar")
+//       .css("width", progress + "%")
+//       .attr("aria-valuenow", progress)
+//       .text(progress + "%");
+//     if (progress >= 100) {
+//       clearInterval(interval);
+//     } else if (progress >= 70) {
+//       step = 0.1;
+//     }
+//   }, 100);
+// };
