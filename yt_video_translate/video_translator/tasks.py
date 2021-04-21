@@ -380,7 +380,7 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
     if ratio < 0.95:
         ratio = 0.95
     elif ratio > 1.05 and ratio <= 1.21:
-        ratio = ratio + 0.08
+        ratio = ratio + 0.09
     elif ratio > 1.3 and ratio <= 1.4:
         ratio = 1.35
     elif ratio > 1.4:
