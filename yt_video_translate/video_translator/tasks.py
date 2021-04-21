@@ -24,11 +24,18 @@ from .models import Video
 
 User = get_user_model()
 
+# @celery_app.task(soft_time_limit=10000)
+# def get_id():
+#     pass
+
 
 @celery_app.task(soft_time_limit=10000)
-def download_yt_video(my_id, link):
+def download_yt_video(my_id, link, targetLanguage, speakingVoice):
     my_user = User(id=my_id)
     video = Video(user=my_user, id=download_yt_video.request.id)
+    # video = Video.objects.get(pk=video_id, user=my_user)
+    # video.save(commit=False)
+    # print("video.id from tasks - download_yt_video", video.id)
 
     credential_path = (
         "yt_video_translate/video_translator/env/translate-af9005978349.json"
@@ -54,27 +61,21 @@ def download_yt_video(my_id, link):
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
-    file_content_only_audio_save = audioFromVideo(
-        f"{file_path}/{yt_id}.mp4", temp_audio
-    )
-    video.audio_clip.save("audio.wav", file_content_only_audio_save)
+    # file_content_only_audio_save =
+    audioFromVideo(f"{file_path}/{yt_id}.mp4", temp_audio)
+    # video.audio_clip.save("audio.wav", file_content_only_audio_save)
 
     """Remove Audio from the Downloaded Video File"""
-    file_content_silent_video_save = removeAudioFromVideo(
-        f"{file_path}/{yt_id}.mp4", temp_silent_video
-    )
-    video.silent_video_clip.save(f"silent_{yt_id}.mp4", file_content_silent_video_save)
+    # file_content_silent_video_save =
+    removeAudioFromVideo(f"{file_path}/{yt_id}.mp4", temp_silent_video)
+    # video.silent_video_clip.save(f"silent_{yt_id}.mp4", file_content_silent_video_save)
 
     """Translate Audio from One Language to another"""
     """EDIT AFTER DRAFT"""
     sourceLanguage = "en"
-    targetLanguage = "es"
+    targetLanguage = targetLanguage
     speakerCount = 2
-    # bn - IN - Wavenet - A
-    # es - es-ES-Wavenet-B
-    # hi - IN - Wavenet - C
-    # "bn": "bn-IN-Wavenet-B"
-    # "hi": "hi-IN-Wavenet-C"
+
     outputFile = translation_to_target_language(
         video,
         temp_audio,
@@ -83,7 +84,7 @@ def download_yt_video(my_id, link):
         sourceLanguage,
         file_path,
         targetLanguage,
-        {"es": "es-ES-Wavenet-B"},
+        speakingVoice,
         [],
         speakerCount,
     )

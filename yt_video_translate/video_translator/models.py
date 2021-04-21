@@ -19,12 +19,12 @@ class Video(models.Model):
     video_clip = models.FileField(
         upload_to=user_directory_path, null=True, verbose_name=""
     )
-    silent_video_clip = models.FileField(
-        upload_to=user_directory_path, null=True, verbose_name=""
-    )
-    audio_clip = models.FileField(
-        upload_to=user_directory_path, null=True, verbose_name=""
-    )
+    # silent_video_clip = models.FileField(
+    #     upload_to=user_directory_path, null=True, verbose_name=""
+    # )
+    # audio_clip = models.FileField(
+    #     upload_to=user_directory_path, null=True, verbose_name=""
+    # )
     translated_audio_clip = models.FileField(
         upload_to=user_directory_path, null=True, verbose_name=""
     )

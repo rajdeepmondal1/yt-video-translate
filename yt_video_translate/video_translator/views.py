@@ -22,7 +22,26 @@ def video_index(request):
         form = Video_form(data=request.POST or None, files=request.FILES or None)
         if form.is_valid():
             link = form.cleaned_data.get("youtube_url")
-            task = download_yt_video.delay(request.user.id, link)
+            language = form.cleaned_data.get("language")
+            voice = form.cleaned_data.get("voice")
+
+            # LANGUAGE AND VOICE CONDITIONS
+            if language == "Bengali":
+                targetLanguage = "bn"
+                if voice == "Male":
+                    speakingVoice = {"bn": "bn-IN-Wavenet-B"}
+                elif voice == "Female":
+                    speakingVoice = {"bn": "bn-IN-Wavenet-A"}
+            elif language == "Hindi":
+                targetLanguage = "hi"
+                if voice == "Male":
+                    speakingVoice = {"hi": "hi-IN-Wavenet-C"}
+                elif voice == "Female":
+                    speakingVoice = {"hi": "hi-IN-Wavenet-D"}
+
+            task = download_yt_video.delay(
+                request.user.id, link, targetLanguage, speakingVoice
+            )
             return redirect("video_translator:currently_translating", pk=task.id)
         return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
 
