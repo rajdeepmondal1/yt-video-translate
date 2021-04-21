@@ -99,15 +99,6 @@ def current_processed_file(request, pk):
             "current_file": current_file,
         },
     )
-    # my_user = User(id=request.user.id)
-    # current_file = Video.objects.filter(user=my_user).order_by("-created").first()
-    # return render(
-    #     request,
-    #     "video_translator/current_processed_file.html",
-    #     {
-    #         "current_file": current_file,
-    #     },
-    # )
 
 
 @login_required

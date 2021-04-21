@@ -19,12 +19,6 @@ class Video(models.Model):
     video_clip = models.FileField(
         upload_to=user_directory_path, null=True, verbose_name=""
     )
-    # silent_video_clip = models.FileField(
-    #     upload_to=user_directory_path, null=True, verbose_name=""
-    # )
-    # audio_clip = models.FileField(
-    #     upload_to=user_directory_path, null=True, verbose_name=""
-    # )
     translated_audio_clip = models.FileField(
         upload_to=user_directory_path, null=True, verbose_name=""
     )
@@ -36,13 +30,5 @@ class Video(models.Model):
     is_translated = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # class Meta:
-    #     app_label = "video_translator"
-
     def __str__(self):
         return str(self.youtube_title)
-
-
-# class dummy(models.Model):
-#     created = models.DateTimeField(auto_now_add=True)
-#     modified = models.DateTimeField(auto_now=True)

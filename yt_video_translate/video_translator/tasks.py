@@ -388,7 +388,6 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
     else:
         return baseAudio
     return speak(text, languageCode, voiceName=voiceName, speakingRate=ratio)
-    # return speak(text, languageCode, voiceName=voiceName)
 
 
 def translation_to_target_language(
@@ -437,9 +436,6 @@ def translation_to_target_language(
     with open(fn, "w") as f:
         json.dump(sentences, f)
 
-    # print("test transscript")
-    # with open(fn, "r") as f:
-    #     print(f)
     audioDirectory = os.path.join(file_path, "audioDirectory")
     os.mkdir(audioDirectory)
     languageDirectory = os.path.join(audioDirectory, targetLanguage)
@@ -504,4 +500,3 @@ def task_failure_notifier(sender=None, **kwargs):
 def task_success_notifier(sender=None, **kwargs):
     sender.request.id
     print("From task_success_notifier ==> Task run successfully!")
-    # return HttpResponseRedirect(reverse("video_translator:current_processed_file"))

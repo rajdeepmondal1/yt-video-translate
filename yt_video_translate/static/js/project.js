@@ -6,7 +6,6 @@ const checkStatus = () => {
     console.log("Got article status:", resp.status);
     if (resp.status == 200) {
       console.log("Article ready - refresh page.");
-      //   location.reload();
       location.assign(redirectURL);
     } else {
       console.log("Article processing - wait.");
