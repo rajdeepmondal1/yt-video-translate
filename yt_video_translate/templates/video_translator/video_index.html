@@ -14,6 +14,14 @@
       </div>
     </div>
 
+    {% if message %}
+    <ul class="messages">
+      <!-- {% for message in messages %} -->
+      <li class="{{ message.tags }}">{{ message }}</li>
+      <!-- {% endfor %} -->
+    </ul>
+    {% endif %}
+
     <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
       <form
         id="input_form"
@@ -49,5 +57,5 @@
   s0.parentNode.insertBefore(s1,s0);
   })();
   </script> -->
-  <!--End of Tawk.to Script -->
+<!--End of Tawk.to Script -->
 {% endblock content %}

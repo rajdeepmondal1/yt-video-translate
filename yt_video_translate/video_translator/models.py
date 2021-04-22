@@ -11,7 +11,6 @@ def user_directory_path(instance, filename):
     return f"user_{instance.user.id}/video_{instance.id}/{filename}"
 
 
-# Create your models here.
 class Video(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     youtube_url = models.TextField()

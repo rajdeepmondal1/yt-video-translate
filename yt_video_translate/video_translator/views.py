@@ -5,9 +5,8 @@ import subprocess
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import redirect, render
-from django.urls import reverse
 
 from .forms import Video_form
 from .models import Video
@@ -43,7 +42,12 @@ def video_index(request):
                 request.user.id, link, targetLanguage, speakingVoice
             )
             return redirect("video_translator:currently_translating", pk=task.id)
-        return HttpResponseRedirect(reverse("video_translator:current_processed_file"))
+        else:
+            return render(
+                request,
+                "video_translator/video_index.html",
+                {"form": form, "message": "Please enter a valid Youtube Link."},
+            )
 
     else:
         form = Video_form()
