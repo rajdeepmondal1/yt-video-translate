@@ -6,8 +6,8 @@ from pytube import YouTube, extract
 
 
 def validate_youtube_url(value):
-    yt = YouTube(f"{value}")
     if validators.url(f"{value}"):
+        yt = YouTube(f"{value}")
         yt_id = extract.video_id(f"{value}")
         if not check_video_url(yt_id) or not yt_id:
             raise ValidationError(
@@ -23,7 +23,7 @@ def validate_youtube_url(value):
                     ),
                     params={"value": value},
                 )
-    else:
+    if not validators.url(f"{value}"):
         raise ValidationError(
             _("%(value)s is not an valid link."),
             params={"value": value},
