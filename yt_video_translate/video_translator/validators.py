@@ -7,14 +7,14 @@ from pytube import YouTube, extract
 
 def validate_youtube_url(value):
     if validators.url(f"{value}"):
-        yt = YouTube(f"{value}")
         yt_id = extract.video_id(f"{value}")
-        if not check_video_url(yt_id) or not yt_id:
+        if not check_video_url(yt_id) or yt_id is None:
             raise ValidationError(
                 _("%(value)s is not an valid youtube link."),
                 params={"value": value},
             )
         else:
+            yt = YouTube(f"{value}")
             if yt.length > 420:
                 raise ValidationError(
                     _(
