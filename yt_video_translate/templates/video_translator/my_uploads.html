@@ -1,14 +1,15 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-
-{% block content %}
-    {% if qs %}
-        <h1>My Uploads</h1>
-        {% for q in qs %}
-            <ul>
-                <a href="{% url 'video_translator:download' q.id %}" download>Translated - {{ q.youtube_title }}</a>
-            </ul>
-        {% endfor %}
-    {% endif %}
+{% extends "base.html" %} {% load static %} {% load crispy_forms_tags %}
+{% block content %} {% if qs %}
+<h1>My Uploads</h1>
+{% for q in qs %}
+<ul>
+  <a href="{% url 'video_translator:download' q.id %}" download
+    >Translated - {{ q.youtube_title }}</a
+  >
+</ul>
+{% endfor %} {% endif %}
+<h5 class="d-flex justify-content-center align-items-center">
+  <a href="{% url 'video_translator:video_index' %}" class="mx-1">Click</a> here
+  to translate more videos.
+</h5>
 {% endblock content %}

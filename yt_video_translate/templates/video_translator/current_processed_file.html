@@ -1,15 +1,20 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-
+{% extends "base.html" %} {% load static %} {% load crispy_forms_tags %}
 {% block content %}
-    {% if current_file %}
-        <h2 class="d-flex justify-content-center align-items-center">Your Translated File</h2>
-        <h4 class="d-flex justify-content-center align-items-center"><a
-                href="{% url 'video_translator:download' current_file.id %}" download>Translated
-            - {{ current_file.youtube_title }}</a></h4>
-        <h6 class="d-flex justify-content-center align-items-center"><a
-                href="{% url 'video_translator:my_uploads' %}" class="mx-1">Click</a> here for all your previous
-            processed Videos.</h6>
-    {% endif %}
-{% endblock content %}
+{% if current_file %}
+<h2 class="d-flex justify-content-center align-items-center">
+  Your Translated File
+</h2>
+<h4 class="d-flex justify-content-center align-items-center">
+  <a href="{% url 'video_translator:download' current_file.id %}" download
+    >Translated - {{ current_file.youtube_title }}</a
+  >
+</h4>
+<h5 class="d-flex justify-content-center align-items-center">
+  <a href="{% url 'video_translator:video_index' %}" class="mx-1">Click</a> here
+  to translate more videos.
+</h5>
+<h6 class="d-flex justify-content-center align-items-center">
+  <a href="{% url 'video_translator:my_uploads' %}" class="mx-1">Click</a> here
+  for all your previous processed Videos.
+</h6>
+{% endif %} {% endblock content %}

@@ -54,14 +54,10 @@ def download_yt_video(my_id, link, targetLanguage, speakingVoice):
     video.video_clip.save(f"{yt.title}.mp4", file_content_video)
 
     """Extract Audio from the Downloaded Video File"""
-    # file_content_only_audio_save =
     audioFromVideo(f"{file_path}/{yt_id}.mp4", temp_audio)
-    # video.audio_clip.save("audio.wav", file_content_only_audio_save)
 
     """Remove Audio from the Downloaded Video File"""
-    # file_content_silent_video_save =
     removeAudioFromVideo(f"{file_path}/{yt_id}.mp4", temp_silent_video)
-    # video.silent_video_clip.save(f"silent_{yt_id}.mp4", file_content_silent_video_save)
 
     """Translate Audio from One Language to another"""
     """EDIT AFTER DRAFT"""
@@ -377,14 +373,28 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
     except ZeroDivisionError:
         ratio = 1
 
-    if ratio < 0.95:
+    if ratio > 0.9 and ratio < 1.0:
         ratio = 0.95
-    elif ratio > 1.05 and ratio <= 1.21:
-        ratio = ratio + 0.09
+    elif ratio >= 1.0 and ratio <= 1.1:
+        ratio = 1.05
+    elif ratio > 1.1 and ratio <= 1.2:
+        ratio = 1.15
+    elif ratio > 1.2 and ratio <= 1.3:
+        ratio = 1.25
     elif ratio > 1.3 and ratio <= 1.4:
         ratio = 1.35
-    elif ratio > 1.4:
-        ratio = 1.4
+    elif ratio > 1.4 and ratio <= 1.5:
+        ratio = 1.45
+    elif ratio > 1.5 and ratio <= 1.6:
+        ratio = 1.55
+    elif ratio > 1.6 and ratio <= 1.7:
+        ratio = 1.65
+    elif ratio > 1.7 and ratio <= 1.8:
+        ratio = 1.75
+    elif ratio > 1.8 and ratio <= 1.9:
+        ratio = 1.85
+    elif ratio > 1.9 and ratio <= 2.0:
+        ratio = 1.95
     else:
         return baseAudio
     return speak(text, languageCode, voiceName=voiceName, speakingRate=ratio)
