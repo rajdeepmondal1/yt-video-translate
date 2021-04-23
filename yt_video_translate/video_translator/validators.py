@@ -11,6 +11,7 @@ def validate_youtube_url(value):
         if check_video_url(yt_id):
             yt = YouTube(f"{value}")
             if yt.length > 420:
+                # if yt.length > 1200:
                 raise ValidationError(
                     _(
                         "%(value)s is longer than 7 minutes."

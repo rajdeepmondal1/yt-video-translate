@@ -159,6 +159,8 @@ def getTranscriptsInJSON(
 
     def convertToJSON(result):
         json = []
+        break_counter = 0
+        my_first_word = {}
 
         for section in result.results:
             data = {"transcript": section.alternatives[0].transcript, "words": []}
@@ -171,13 +173,22 @@ def getTranscriptsInJSON(
                         "speaker_tag": word.speaker_tag,
                     }
                 )
-            if len(data["words"]) > 0:
-                try:
-                    data["words"].insert(0, data["words"][0])
-                except IndexError:
-                    pass
+            if break_counter < 1:
+                my_first_word = data["words"][0]
+                break_counter += 1
             json.append(data)
-        return json
+
+        new_json = []
+        new_data = {"transcript": "", "words": []}
+        try:
+            new_data["words"].append(my_first_word)
+        except IndexError:
+            pass
+        for data in json:
+            new_data["transcript"] += data["transcript"]
+            new_data["words"] += data["words"]
+        new_json.append(new_data)
+        return new_json
 
     client = speech.SpeechClient()
     audio = speech.RecognitionAudio(uri=googleCloudStoragePath)
