@@ -289,7 +289,7 @@ def breakIntoSentences(json, language):
 
     return_sentences = []
     for sentence in sentences:
-        if sentence[language] != "":
+        if sentence[language] != "" or len(sentence[language].split()) > 1:
             return_sentences.append(sentence)
     return return_sentences
 
@@ -396,16 +396,18 @@ def speakUnderDuration(text, languageCode, file_path, durationSecs, voiceName=No
         ratio = 1.35
     elif ratio > 1.4 and ratio <= 1.5:
         ratio = 1.45
-    elif ratio > 1.5 and ratio <= 1.6:
-        ratio = 1.55
-    elif ratio > 1.6 and ratio <= 1.7:
-        ratio = 1.65
-    elif ratio > 1.7 and ratio <= 1.8:
-        ratio = 1.75
-    elif ratio > 1.8 and ratio <= 1.9:
-        ratio = 1.85
-    elif ratio > 1.9 and ratio <= 2.0:
-        ratio = 1.95
+    elif ratio > 1.5:
+        ratio = 1.5
+    # elif ratio > 1.5 and ratio <= 1.6:
+    #     ratio = 1.55
+    # elif ratio > 1.6 and ratio <= 1.7:
+    #     ratio = 1.65
+    # elif ratio > 1.7 and ratio <= 1.8:
+    #     ratio = 1.75
+    # elif ratio > 1.8 and ratio <= 1.9:
+    #     ratio = 1.85
+    # elif ratio > 1.9 and ratio <= 2.0:
+    #     ratio = 1.95
     else:
         return baseAudio
     return speak(text, languageCode, voiceName=voiceName, speakingRate=ratio)
