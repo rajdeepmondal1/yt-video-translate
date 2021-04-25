@@ -41,10 +41,10 @@ def download_yt_video(my_id, link, targetLanguage, speakingVoice):
     temp_audio = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     temp_silent_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
 
-    if os.path.exists(os.path.join(settings.MEDIA_ROOT, "temp")):
-        shutil.rmtree(os.path.join(settings.MEDIA_ROOT, "temp"), ignore_errors=True)
+    # if os.path.exists(os.path.join(settings.MEDIA_ROOT, "temp")):
+    #     shutil.rmtree(os.path.join(settings.MEDIA_ROOT, "temp"), ignore_errors=True)
 
-    file_path = os.path.join(settings.MEDIA_ROOT, "temp")
+    file_path = os.path.join(settings.MEDIA_ROOT, "temp", f"{yt_id}", f"{uuid.uuid4()}")
 
     video.youtube_url = f"{link}"
     video.youtube_title = yt.title
@@ -82,7 +82,7 @@ def download_yt_video(my_id, link, targetLanguage, speakingVoice):
         video.translated_video_clip.save("translated_video.mp4", outputFile)
 
     """Add the Translated Audio to the Silent Video"""
-    # shutil.rmtree(file_path, ignore_errors=True)
+    shutil.rmtree(file_path, ignore_errors=True)
 
 
 def downloadVideo(file_path, yt, yt_id):
