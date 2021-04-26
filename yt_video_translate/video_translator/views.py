@@ -37,18 +37,18 @@ def video_index(request):
                     speakingVoice = {"hi": "hi-IN-Wavenet-C"}
                 elif voice == "Female":
                     speakingVoice = {"hi": "hi-IN-Wavenet-D"}
-            # elif language == "Mandarin":
-            #     targetLanguage = "cmn"
-            #     if voice == "Male":
-            #         speakingVoice = {"cmn": "cmn-CN-Wavenet-C"}
-            #     elif voice == "Female":
-            #         speakingVoice = {"cmn": "cmn-CN-Wavenet-A"}
-            # elif language == "Spanish":
-            #     targetLanguage = "es"
-            #     if voice == "Male":
-            #         speakingVoice = {"es": "es-US-Wavenet-B"}
-            #     elif voice == "Female":
-            #         speakingVoice = {"es": "es-US-Wavenet-C"}
+            elif language == "Mandarin":
+                targetLanguage = "cmn"
+                if voice == "Male":
+                    speakingVoice = {"cmn": "cmn-CN-Wavenet-C"}
+                elif voice == "Female":
+                    speakingVoice = {"cmn": "cmn-CN-Wavenet-A"}
+            elif language == "Spanish":
+                targetLanguage = "es"
+                if voice == "Male":
+                    speakingVoice = {"es": "es-US-Wavenet-B"}
+                elif voice == "Female":
+                    speakingVoice = {"es": "es-US-Wavenet-C"}
 
             task = download_yt_video.delay(
                 request.user.id, link, targetLanguage, speakingVoice
